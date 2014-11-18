@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.dianping.taskcenter"></context:component-scan>
+
+
+    <bean name="beans" class="com.dianping.taskcenter.utils.Beans"></bean>
+
+    <bean class="com.dianping.taskcenter.handler.TaskAdapterDispatch" id="taskAdapterDispatch">
+        <property name="adapterMap">
+            <map>
+                <entry key="5" value-ref="dealGroupAdapter"></entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean class="com.dianping.taskcenter.handler.impl.DealGroupAdapter" id="dealGroupAdapter">
+        <property name="levelManagersMap">
+            <map>
+                <entry key="0" value-ref="salesHandler"></entry>
+                <entry key="1" value-ref="oneLevelHandler"></entry>
+                <entry key="2" value-ref="twoLevelHandler"></entry>
+            </map>
+        </property>
+    </bean>
+
+
+    <!--生产者的工厂类 ProducerFactory -->
+    <bean id="producerFactory" class="com.dianping.swallow.producer.impl.ProducerFactoryImpl"
+          factory-method="getInstance" />
+    <!--生产者 ProducerClient -->
+    <bean id="producerClient" factory-bean="producerFactory"
+          factory-method="createProducer">
+        <constructor-arg>
+            <ref bean="destination" />
+        </constructor-arg>
+        <constructor-arg>
+            <ref bean="producerConfig" />
+        </constructor-arg>
+    </bean>
+    <!--消息的目的地 Destination -->
+    <bean id="destination" class="com.dianping.swallow.common.message.Destination"
+          factory-method="topic">
+        <constructor-arg value="tc_taskcenter_task_update" /> <!-- ${topicName}为消息的Topic，需自定义-->
+    </bean>
+    <!--生产者的配置类 ProducerConfig -->
+    <bean id="producerConfig" class="com.dianping.swallow.producer.ProducerConfig">
+        <property name="mode" value="SYNC_MODE" /><!--同步模式(推荐)-->
+    </bean>
+
+</beans>

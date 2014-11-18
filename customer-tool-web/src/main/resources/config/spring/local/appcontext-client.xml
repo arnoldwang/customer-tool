@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+
+    <!--<bean id="taskCenterService" class="com.dianping.dpsf.spring.ProxyBeanFactory"
+          init-method="init">
+        <property name="serviceName"
+                  value="http://service.dianping.com/taskcenterService/taskcenterService_1.0.0"/>
+        <property name="iface" value="com.dianping.taskcenter.TaskCenterService"/>
+        <property name="serialize" value="hessian"/>
+        <property name="callMethod" value="sync"/>
+        <property name="timeout" value="5000"/>
+        &lt;!&ndash;超时时间根据具体需求调整&ndash;&gt;
+    </bean>-->
+
+</beans>

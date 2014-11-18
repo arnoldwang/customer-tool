@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Task">
+
+    <resultMap id="task" class="com.dianping.taskcenter.dto.TaskDTO">
+        <result column="Id"             property="id"/>
+        <result column="Title"          property="title"/>
+        <result column="SourceId"       property="sourceId"/>
+        <result column="CategoryId"     property="categoryId"/>
+        <result column="SubCategory"    property="subCategory"/>
+        <result column="Priority"       property="priority"/>
+        <result column="Status"         property="status"/>
+        <result column="OutBizId"       property="outBizId"/>
+        <result column="OwnerId"        property="ownerId"/>
+        <result column="ClosedTime"     property="closedTime"/>
+        <result column="AddTime"        property="addTime"/>
+        <result column="UpdateTime"     property="updateTime"/>
+        <result column="TaskDescription" property="taskDescription"/>
+        <result column="ProcessComment" property="processComment"/>
+        <result column="DeadLine"       property="deadLine"/>
+    </resultMap>
+
+    <insert id="addTask" parameterClass="map">
+        INSERT INTO TC_Task
+        (
+        Title,
+        SourceId,
+        CategoryId,
+        SubCategory,
+        Priority,
+        Status,
+        OutBizId,
+        OwnerId,
+        ClosedTime,
+        AddTime,
+        UpdateTime,
+        TaskDescription,
+        ProcessComment,
+        DeadLine
+        )
+        VALUES
+        (
+        #task.title#,
+        #task.sourceId#,
+        #task.categoryId#,
+        #task.subCategory#,
+        #task.priority#,
+        #task.status#,
+        #task.outBizId#,
+        #task.ownerId#,
+        #task.closedTime#,
+        #task.addTime#,
+        #task.updateTime#,
+        #task.taskDescription#,
+        #task.processComment#,
+        #task.deadLine#
+        )
+        <selectKey resultClass="int" keyProperty="id">
+            select @@IDENTITY AS Id
+        </selectKey>
+    </insert>
+
+    <select id="loadTaskById" resultMap="task" parameterClass="map">
+        SELECT Id,
+        Title,
+        SourceId,
+        CategoryId,
+        SubCategory,
+        Priority,
+        Status,
+        OutBizId,
+        OwnerId,
+        ClosedTime,
+        AddTime,
+        UpdateTime,
+        TaskDescription,
+        ProcessComment,
+        DeadLine
+        FROM TC_Task
+        WHERE Id=#id#
+    </select>
+
+    <select id="findTasksByIds" resultMap="task" parameterClass="map">
+        SELECT
+        Id,
+        Title,
+        SourceId,
+        CategoryId,
+        SubCategory,
+        Priority,
+        Status,
+        OutBizId,
+        OwnerId,
+        ClosedTime,
+        AddTime,
+        UpdateTime,
+        TaskDescription,
+        ProcessComment,
+        DeadLine
+        FROM TC_Task
+        WHERE Id in
+        <iterate property="ids" open="(" close=")" conjunction=",">
+            #ids[]#
+        </iterate>
+    </select>
+
+    <select id="findTasksByOutBizIds" resultMap="task" parameterClass="map">
+        SELECT
+        Id,
+        Title,
+        SourceId,
+        CategoryId,
+        SubCategory,
+        Priority,
+        Status,
+        OutBizId,
+        OwnerId,
+        ClosedTime,
+        AddTime,
+        UpdateTime,
+        TaskDescription,
+        ProcessComment,
+        DeadLine
+        FROM TC_Task
+        WHERE OutBizId in
+        <iterate property="outBizIds" open="(" close=")" conjunction=",">
+            #outBizIds[]#
+        </iterate>
+        <dynamic prepend="AND">
+            <isNotEmpty prepend="AND" property="taskRequest.categoryId">
+                CategoryId=#taskRequest.categoryId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="taskRequest.sourceId">
+                SourceId=#taskRequest.sourceId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="taskRequest.status">
+                Status=#taskRequest.status#
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <update id="updateTaskById" parameterClass="map">
+        UPDATE TC_Task
+        SET
+        Title=#task.title#,
+        SourceId=#task.sourceId#,
+        CategoryId=#task.categoryId#,
+        SubCategory=#task.subCategory#,
+        Priority=#task.priority#,
+        Status=#task.status#,
+        OutBizId=#task.outBizId#,
+        OwnerId=#task.ownerId#,
+        ClosedTime=#task.closedTime#,
+        UpdateTime=#task.updateTime#,
+        TaskDescription=#task.taskDescription#,
+        ProcessComment=#task.processComment#,
+        DeadLine=#task.deadLine#
+        WHERE Id=#task.id#
+    </update>
+
+
+    <select id="getTasksByTaskRequest" resultMap="task" parameterClass="map">
+        SELECT Id,
+        Title,
+        SourceId,
+        CategoryId,
+        SubCategory,
+        Priority,
+        Status,
+        OutBizId,
+        OwnerId,
+        ClosedTime,
+        AddTime,
+        UpdateTime,
+        TaskDescription,
+        ProcessComment,
+        DeadLine
+        FROM TC_Task
+        WHERE Status != 2
+        <dynamic prepend="AND">
+            <isNotEmpty prepend="AND" property="taskRequest.ownerId">
+                OwnerId=#taskRequest.ownerId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="taskRequest.categoryId">
+                CategoryId=#taskRequest.categoryId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="taskRequest.sourceId">
+                SourceId=#taskRequest.sourceId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="taskRequest.status">
+                Status=#taskRequest.status#
+            </isNotEmpty>
+        </dynamic>
+        ORDER BY UpdateTime DESC
+    </select>
+
+    <delete id="deleteTaskById" parameterClass="map">
+        DELETE FROM TC_Task
+        WHERE  Id=#id#
+    </delete>
+
+    <select id="countByOwnerAndStatus" parameterClass="map" resultClass="int">
+        SELECT COUNT(1)
+        FROM TC_Task
+        WHERE OwnerId = #ownerId# AND Status = #status# AND Status != 2
+    </select>
+    <select id="getOwnerTasksCountDynamic" parameterClass="map" resultClass="int">
+        SELECT COUNT(1)
+        FROM TC_Task
+        WHERE OwnerId = #ownerId# AND Status = #status# AND Status != 2
+        <dynamic prepend="AND">
+            <isNotEqual compareValue="-1" prepend="AND" property="categoryId">
+                CategoryId=#categoryId#
+            </isNotEqual>
+            <isNotEqual compareValue="-1" prepend="AND" property="sourceId">
+                SourceId=#sourceId#
+            </isNotEqual>
+        </dynamic>
+    </select>
+    
+    <update id="maskTaskFinishByBiz" parameterClass="map">
+        UPDATE TC_Task Set Status = 2
+        WHERE SourceId = #sourceId# AND CategoryId = #categoryId# AND OutBizId = #outBizId#
+    </update>
+
+    <update id="maskTaskFinish" parameterClass="map">
+        UPDATE TC_Task Set Status = 2
+        WHERE Id = #taskId#
+    </update>
+</sqlMap>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="parentDao" class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true">
+        <property name="interceptorNames">
+            <list>
+                <value>daoAutoRealizerAdvisor</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- MySQL sql converter -->
+    <bean id="mysqlConverter" class="com.dianping.avatar.dao.ibatis.MySqlConverter"/>
+
+    <!-- The introduce interceptor for all Dao  -->
+    <bean id="daoAutoRealizer" class="com.dianping.avatar.dao.DAOAutoRealizer"/>
+
+    <!-- The advisor for inject interceptor -->
+    <bean id="daoAutoRealizerAdvisor" class="org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
+        <property name="advice" ref="daoAutoRealizer"/>
+        <property name="expression"
+                  value="execution(* com.dianping..dao..*.*(..)) and !execution(* com.dianping.avatar..dao..*.*(..))"/>
+    </bean>
+
+</beans>

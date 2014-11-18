@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="OfflineAlarmDealGroup">
+
+    <typeAlias alias="OffAlrDealGroup" type="com.dianping.taskcenter.entity.OfflineAlarmDealGroup"/>
+    <typeAlias alias="OffAlrDealGroupQuery" type="com.dianping.taskcenter.entity.OfflineAlarmDealGroupQuery"/>
+
+
+    <resultMap id="result" class="OffAlrDealGroup">
+        <result property="id" column="Id"></result>
+        <result property="createBy" column="CreateBy"></result>
+        <result property="updateBy" column="UpdateBy"></result>
+        <result property="createTime" column="CreateTime"></result>
+        <result property="updateTime" column="UpdateTime"></result>
+        <result property="dealGroupId" column="DealGroupId"></result>
+        <result property="salesLoginId" column="SalesLoginId"></result>
+        <result property="salesManagerPath" column="SalesManagerPath"></result>
+        <result property="departmentName" column="DepartmentName"></result>
+        <result property="teamLeaderName" column="TeamLeaderName"></result>
+        <result property="totalSalesAmount" column="TotalSalesAmount"></result>
+        <result property="lastThirtyDaysSalesAmount" column="LastThirtyDaysSalesAmount"></result>
+        <result property="curMonSalesAmount" column="CurMonSalesAmount"></result>
+        <result property="yesterdaySalesAmount" column="YesterdaySalesAmount"></result>
+        <result property="salesName" column="SalesName"></result>
+    </resultMap>
+
+    <resultMap id="resultQuery" class="OffAlrDealGroupQuery">
+        <result property="id" column="Id"></result>
+        <result property="createBy" column="CreateBy"></result>
+        <result property="updateBy" column="UpdateBy"></result>
+        <result property="createTime" column="CreateTime"></result>
+        <result property="updateTime" column="UpdateTime"></result>
+        <result property="dealGroupId" column="DealGroupId"></result>
+        <result property="salesLoginId" column="SalesLoginId"></result>
+        <result property="salesManagerPath" column="SalesManagerPath"></result>
+        <result property="departmentName" column="DepartmentName"></result>
+        <result property="teamLeaderName" column="TeamLeaderName"></result>
+        <result property="totalSalesAmount" column="TotalSalesAmount"></result>
+        <result property="lastThirtyDaysSalesAmount" column="LastThirtyDaysSalesAmount"></result>
+        <result property="curMonSalesAmount" column="CurMonSalesAmount"></result>
+        <result property="yesterdaySalesAmount" column="YesterdaySalesAmount"></result>
+        <result property="taskId" column="TaskId"></result>
+        <result property="title" column="Title"></result>
+        <result property="sourceId" column="SourceId"></result>
+        <result property="categoryId" column="CategoryId"></result>
+        <result property="subCategory" column="SubCategory"></result>
+        <result property="priority" column="Priority"></result>
+        <result property="status" column="Status"></result>
+        <result property="ownerId" column="OwnerId"></result>
+        <result property="taskAddTime" column="TaskAddTime"></result>
+        <result property="taskUpdateTime" column="TaskUpdateTime"></result>
+        <result property="taskClosedTime" column="TaskClosedTime"></result>
+        <result property="taskDescription" column="TaskDescription"></result>
+        <result property="processComment" column="ProcessComment"></result>
+        <result property="deadLine" column="DeadLine"></result>
+        <result property="salesName" column="SalesName"></result>
+    </resultMap>
+
+
+
+    <sql id="sql_select">
+        SELECT
+        Id,
+        CreateBy,
+        UpdateBy,
+        CreateTime,
+        UpdateTime,
+        DealGroupId,
+        SalesLoginId,
+        SalesManagerPath,
+        DepartmentName,
+        TeamLeaderName,
+        TotalSalesAmount,
+        LastThirtyDaysSalesAmount,
+        CurMonSalesAmount,
+        YesterdaySalesAmount,
+        SalesName
+        FROM OfflineAlarmDealGroup
+    </sql>
+
+    <sql id="sql_select_query">
+        SELECT
+        oa.Id,
+        oa.CreateBy,
+        oa.UpdateBy,
+        oa.CreateTime,
+        oa.UpdateTime,
+        oa.DealGroupId,
+        oa.SalesLoginId,
+        oa.SalesManagerPath,
+        oa.DepartmentName,
+        oa.TeamLeaderName,
+        oa.TotalSalesAmount,
+        oa.LastThirtyDaysSalesAmount,
+        oa.CurMonSalesAmount,
+        oa.YesterdaySalesAmount,
+        t.Id AS TaskId,
+        t.Title AS Title,
+        t.SourceId AS SourceId,
+        t.CategoryId AS CategoryId,
+        t.SubCategory AS SubCategory,
+        t.Priority AS Priority,
+        t.Status AS Status,
+        t.OwnerId AS OwnerId,
+        t.ClosedTime AS TaskClosedTime,
+        t.AddTime AS TaskAddTime,
+        t.UpdateTime AS TaskUpdateTime,
+        t.TaskDescription AS TaskDescription,
+        t.ProcessComment AS ProcessComment,
+        t.DeadLine AS DeadLine,
+        oa.SalesName
+        FROM OfflineAlarmDealGroup oa
+        JOIN TC_Task t on t.OwnerId = oa.SalesLoginId
+    </sql>
+
+    <select id="findById" resultMap="result">
+        <include refid="sql_select"></include>
+        WHERE Id=#id#
+
+    </select>
+
+    <insert id="insert">
+        <![CDATA[
+     INSERT INTO OfflineAlarmDealGroup
+     (Id,
+     CreateBy,
+     UpdateBy,
+     CreateTime,
+     UpdateTime,
+     DealGroupId,
+     SalesLoginId,
+     SalesManagerPath,
+     DepartmentName,
+     TeamLeaderName,
+     TotalSalesAmount,
+     LastThirtyDaysSalesAmount,
+     CurMonSalesAmount,
+     YesterdaySalesAmount,
+     SalesName)
+     VALUES
+     (#entity.id#,
+    #entity.createBy#,
+    #entity.updateBy#,
+    #entity.createTime#,
+    #entity.updateTime#,
+    #entity.dealGroupId#,
+    #entity.salesLoginId#,
+    #entity.salesManagerPath#,
+    #entity.departmentName#,
+    #entity.teamLeaderName#,
+    #entity.totalSalesAmount#,
+    #entity.lastThirtyDaysSalesAmount#,
+    #entity.curMonSalesAmount#,
+    #entity.yesterdaySalesAmount#,
+    #entity.salesName#
+    )
+    ]]>
+        <selectKey resultClass="java.lang.Integer" keyProperty="id">
+            SELECT @@IDENTITY AS id
+        </selectKey>
+    </insert>
+
+    <delete id="removeById" parameterClass="map">
+        DELETE FROM OfflineAlarmDealGroup WHERE
+        Id=#id#
+    </delete>
+
+    <update id="update">
+        UPDATE OfflineAlarmDealGroup SET
+        UpdateBy=#entity.updateBy#,
+        UpdateTime=#entity.updateTime#,
+        DealGroupId=#entity.dealGroupId#,
+        SalesLoginId=#entity.salesLoginId#,
+        SalesManagerPath=#entity.salesManagerPath#,
+        DepartmentName=#entity.departmentName#,
+        TeamLeaderName=#entity.teamLeaderName#,
+        TotalSalesAmount=#entity.totalSalesAmount#,
+        LastThirtyDaysSalesAmount=#entity.lastThirtyDaysSalesAmount#,
+        CurMonSalesAmount=#entity.curMonSalesAmount#,
+        YesterdaySalesAmount=#entity.yesterdaySalesAmount#,
+        SalesName=#entity.salesName#
+        WHERE Id=#entity.id#
+    </update>
+
+    <select id="findTopSalesAmountDealGroupBySales" parameterClass="map" resultMap="resultQuery">
+        <include refid="sql_select_query"></include>
+        WHERE oa.SalesLoginId = #salesLoginId#  AND t.CategoryId =5 AND t.Status =0
+        <isNotNull prepend="ORDER BY" property="sortBy">
+            $sortBy$ $sortType$
+        </isNotNull>
+        LIMIT $offset$,$limitNum$;
+    </select>
+
+    <select id="findTopSalesAmountDealGroupBySalesLeader" parameterClass="map" resultMap="resultQuery">
+        <include refid="sql_select_query"></include>
+        WHERE oa.SalesManagerPath like CONCAT(#salesLeaderPath#,'%')
+        AND t.CategoryId =5 AND t.Status =0
+        <isNotNull prepend="ORDER BY" property="sortBy">
+            $sortBy$ $sortType$
+        </isNotNull>
+        LIMIT $offset$,$limitNum$;
+    </select>
+
+    <update id="batchUpdate" parameterClass="map" >
+        <![CDATA[
+        REPLACE INTO
+        OfflineAlarmDealGroup(
+        Id,
+     CreateBy,
+     UpdateBy,
+     CreateTime,
+     UpdateTime,
+     DealGroupId,
+     SalesLoginId,
+     SalesManagerPath,
+     DepartmentName,
+     TeamLeaderName,
+     TotalSalesAmount,
+     LastThirtyDaysSalesAmount,
+     CurMonSalesAmount,
+     YesterdaySalesAmount,
+     SalesName
+        )
+        values
+        ]]>
+        <iterate conjunction="," property="offlineAlarmDealGroups">
+            <![CDATA[
+            (
+            #offlineAlarmDealGroups[].id#,
+            #offlineAlarmDealGroups[].createBy#,
+            #offlineAlarmDealGroups[].updateBy#,
+            #offlineAlarmDealGroups[].createTime#,
+            #offlineAlarmDealGroups[].updateTime#,
+            #offlineAlarmDealGroups[].dealGroupId#,
+            #offlineAlarmDealGroups[].salesLoginId#,
+            #offlineAlarmDealGroups[].salesManagerPath#,
+            #offlineAlarmDealGroups[].departmentName#,
+            #offlineAlarmDealGroups[].teamLeaderName#,
+            #offlineAlarmDealGroups[].totalSalesAmount#,
+            #offlineAlarmDealGroups[].lastThirtyDaysSalesAmount#,
+            #offlineAlarmDealGroups[].curMonSalesAmount#,
+            #offlineAlarmDealGroups[].yesterdaySalesAmount#,
+            #offlineAlarmDealGroups[].salesName#
+            )
+          ]]>
+        </iterate>
+
+    </update>
+
+    <select id="findNeedSyncDeals" resultMap="result">
+        <include refid="sql_select"></include>
+    </select>
+
+    <select id="findNeedSyncDeals_COUNT" resultClass="int">
+        <![CDATA[
+        SELECT
+        COUNT(1)
+        FROM OfflineAlarmDealGroup
+        ]]>
+    </select>
+
+    <select id="findAllSales" resultClass="int">
+        SELECT
+        SalesLoginId
+        FROM
+        OfflineAlarmDealGroup
+        GROUP BY
+        SalesLoginId
+    </select>
+
+    <select id="findAllSales_COUNT" resultClass="int">
+        <![CDATA[
+        SELECT COUNT(1) FROM
+        (SELECT
+        COUNT(1)
+        FROM
+        OfflineAlarmDealGroup
+        GROUP BY
+        SalesLoginId) AS stg_off
+        ]]>
+    </select>
+
+    <update id="updateSalesOrgnizationBySalesId">
+        UPDATE
+        OfflineAlarmDealGroup
+        SET
+        SalesManagerPath=#entity.salesManagerPath#,
+        DepartmentName=#entity.departmentName#,
+        TeamLeaderName=#entity.teamLeaderName#,
+        SalesName=#entity.salesName#,
+        UpdateBy=#entity.updateBy#,
+        UpdateTime=#entity.updateTime#
+        WHERE SalesLoginId = #entity.salesLoginId#
+    </update>
+
+    <insert id="batchInsert" parameterClass="map" >
+        <![CDATA[
+        INSERT INTO
+        OfflineAlarmDealGroup(
+        Id,
+     CreateBy,
+     UpdateBy,
+     CreateTime,
+     UpdateTime,
+     DealGroupId,
+     SalesLoginId,
+     SalesManagerPath,
+     DepartmentName,
+     TeamLeaderName,
+     TotalSalesAmount,
+     LastThirtyDaysSalesAmount,
+     CurMonSalesAmount,
+     YesterdaySalesAmount,
+     SalesName
+        )
+        values
+        ]]>
+        <iterate conjunction="," property="entities">
+            <![CDATA[
+            (
+            #entities[].id#,
+            #entities[].createBy#,
+            #entities[].updateBy#,
+            #entities[].createTime#,
+            #entities[].updateTime#,
+            #entities[].dealGroupId#,
+            #entities[].salesLoginId#,
+            #entities[].salesManagerPath#,
+            #entities[].departmentName#,
+            #entities[].teamLeaderName#,
+            #entities[].totalSalesAmount#,
+            #entities[].lastThirtyDaysSalesAmount#,
+            #entities[].curMonSalesAmount#,
+            #entities[].yesterdaySalesAmount#,
+            #entities[].salesName#
+            )
+          ]]>
+        </iterate>
+
+    </insert>
+
+    <select id="findTopSalesAmountDealGroupBySalesCount" resultClass="int">
+        SELECT
+        COUNT(1)
+        FROM OfflineAlarmDealGroup oa
+        JOIN TC_Task t on t.OwnerId = oa.SalesLoginId
+        WHERE oa.SalesLoginId = #salesLoginId# AND t.CategoryId =5 AND t.Status =0
+    </select>
+
+    <select id="findTopSalesAmountDealGroupBySalesLeaderCount" resultClass="int">
+        SELECT
+        COUNT(1)
+        FROM OfflineAlarmDealGroup oa
+        JOIN TC_Task t on t.OwnerId = oa.SalesLoginId
+        WHERE SalesManagerPath like CONCAT(#salesLeaderPath#,'%')
+        AND t.CategoryId =5 AND t.Status =0
+    </select>
+
+
+</sqlMap>

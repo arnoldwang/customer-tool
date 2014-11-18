@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//log4j/log4j Configuration//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+                     threshold="null" debug="null">
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="avatarAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <!-- <param name="Threshold" value="INFO" /> -->
+        <param name="File" value="/data/applogs/taskcenter-web/logs/avatar.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="appAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <!-- <param name="Threshold" value="INFO" /> -->
+        <param name="File" value="/data/applogs/taskcenter-web/logs/app.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="ibatisAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <!-- <param name="Threshold" value="INFO" /> -->
+        <param name="File" value="/data/applogs/taskcenter-web/logs/ibatis.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="illegalAccessAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/data/applogs/taskcenter-web/logs/illegalAccess.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+        </layout>
+    </appender>
+
+    <appender name="illegalParameterAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/data/applogs/taskcenter-web/logs/illegalParameter.log" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+        </layout>
+    </appender>
+
+    <logger name="com.dianping.avatar" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="avatarAppender" />
+    </logger>
+
+    <logger name="com.ibatis" additivity="false">
+        <level value="WARN" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ibatisAppender" />
+    </logger>
+
+    <logger name="java.sql">
+        <level value="WARN" />
+    </logger>
+
+    <root>
+        <level value="DEBUG" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="appAppender" />
+    </root>
+
+</log4j:configuration>
