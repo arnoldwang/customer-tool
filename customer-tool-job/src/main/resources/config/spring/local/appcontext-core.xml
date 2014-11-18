@@ -14,7 +14,7 @@
 
     <bean id="placeholder" class="com.dianping.lion.client.SpringConfig">
         <property name="propertiesPath"
-                  value="config/taskcenter-job-applicationContext.properties"/>
+                  value="config/customer-tool-job-applicationContext.properties"/>
     </bean>
 
     <avatar:cache jms-url="${cache.jms.url}" topic-name="${cache.jms.topic.name}"

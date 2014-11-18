@@ -4,20 +4,4 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 
-    <!--<bean name="userService" class="com.dianping.customerinfo.impl.UserServiceImpl"/>-->
-
-
-    <bean name="oAuthUtil" class="com.dianping.taskcenter.util.OAuthUtil">
-        <property name="clientId" value="${customerinfo-web.oauth.clientId}"/>
-        <property name="clientSecret" value="${customerinfo-web.oauth.clientSecret}"/>
-        <property name="callbackUrl" value="${customerinfo-web.oauth.callbackUrl}"/>
-        <property name="serverUrl" value="${customerinfo-web.oauth.serverUrl}"/>
-    </bean>
-
-    <bean id="jsonMapper" name="jsonMapper" class="org.codehaus.jackson.map.ObjectMapper">
-    </bean>
-
-    <bean id="categoryConfigService" class="com.dianping.taskcenter.util.CategoryLionConfig">
-        <property name="config" value="${taskcenter-service.category.congfig}"/>
-    </bean>
 </beans>

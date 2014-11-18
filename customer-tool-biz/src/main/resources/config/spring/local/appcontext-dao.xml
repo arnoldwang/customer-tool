@@ -3,39 +3,5 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <bean id="taskinfo.sqlMapClient"
-          class="com.dianping.avatar.dao.ibatis.spring.LimitSqlMapClientFactoryBean">
-        <property name="dataSource" ref="taskinfo.dataSource"/>
-        <property name="configLocation"
-                  value="classpath:config/sqlmap/sqlmap-config.xml"/>
-        <property name="sqlConvert" ref="mysqlConverter"/>
-    </bean>
-
-
-    <bean id="taskinfo.daoRealizeTargetparentDao" class="com.dianping.avatar.dao.ibatis.IBatisGenericDaoImpl"
-          abstract="true">
-        <property name="sqlMapClient" ref="taskinfo.sqlMapClient"/>
-    </bean>
-
-    <bean id="taskDao" parent="parentDao">
-        <property name="proxyInterfaces"
-                  value="com.dianping.taskcenter.dao.TaskDao"/>
-        <property name="target">
-            <bean parent="taskinfo.daoRealizeTargetparentDao">
-                <constructor-arg value="Task"/>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="offlineAlarmDealGroupDao" parent="parentDao">
-        <property name="proxyInterfaces"
-                  value="com.dianping.taskcenter.dao.OfflineAlarmDealGroupDao"/>
-        <property name="target">
-            <bean parent="taskinfo.daoRealizeTargetparentDao">
-                <constructor-arg value="OfflineAlarmDealGroup"/>
-            </bean>
-        </property>
-    </bean>
-
 
 </beans>

@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
-    <display-name>Task Center Web Application</display-name>
+    <display-name>Customer Tool Web Application</display-name>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -27,7 +27,7 @@
 
     <context-param>
         <param-name>webAppRootKey</param-name>
-        <param-value>taskcenter-web.root</param-value>
+        <param-value>customer-tool-web.root</param-value>
     </context-param>
 
     <filter>
@@ -147,7 +147,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
-        <url-pattern>/tc/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

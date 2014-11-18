@@ -8,66 +8,66 @@
 
         http://www.dianping.com/schema/avatar http://www.dianping.com/schema/avatar/avatar-1.0.xsd">
 
-    <context:component-scan base-package="com.dianping.taskcenter" />
+<!--     <context:component-scan base-package="com.dianping.taskcenter" /> -->
 
-    <bean id="syncDealAmount" class="com.dianping.taskcenter.task.SyncDealAmount">
-    </bean>
+<!--     <bean id="syncDealAmount" class="com.dianping.taskcenter.task.SyncDealAmount"> -->
+<!--     </bean> -->
 
-    <bean id="syncSalesOrgnization" class="com.dianping.taskcenter.task.SyncSalesOrgnization">
-    </bean>
-
-
-    <!--同步团单交易额定时器-->
-    <bean id="syncDealAmountJob"
-          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="syncDealAmount"/>
-        <property name="targetMethod" value="go"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="syncDealAmountExtCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="syncDealAmountJob"/>
-        <property name="cronExpression" value="${taskcenter-job.syncDealAmount.quartz.expression}"/>
-    </bean>
-
-    <!--同步销售组织架构-->
-    <bean id="syncSalesOrgnizationJob"
-          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="syncSalesOrgnization"/>
-        <property name="targetMethod" value="go"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="syncSalesOrgnizationExtCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="syncSalesOrgnizationJob"/>
-        <property name="cronExpression" value="${taskcenter-job.syncSalesOrgnization.quartz.expression}"/>
-    </bean>
+<!--     <bean id="syncSalesOrgnization" class="com.dianping.taskcenter.task.SyncSalesOrgnization"> -->
+<!--     </bean> -->
 
 
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="jobDetails">
-            <list>
-                <ref bean="syncDealAmountJob" />
-                <ref bean="syncSalesOrgnizationJob" />
-            </list>
-        </property>
-        <property name="triggers">
-            <list>
-                <ref bean="syncDealAmountExtCronTrigger" />
-                <ref bean="syncSalesOrgnizationExtCronTrigger" />
-            </list>
-        </property>
-    </bean>
+<!--     同步团单交易额定时器 -->
+<!--     <bean id="syncDealAmountJob" -->
+<!--           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> -->
+<!--         <property name="targetObject" ref="syncDealAmount"/> -->
+<!--         <property name="targetMethod" value="go"/> -->
+<!--         <property name="concurrent" value="false"/> -->
+<!--     </bean> -->
 
-    <bean id="parentDao" class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true">
-        <property name="interceptorNames">
-            <list>
-                <value>daoAutoRealizerAdvisor</value>
-            </list>
-        </property>
-    </bean>
+<!--     <bean id="syncDealAmountExtCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> -->
+<!--         <property name="jobDetail" ref="syncDealAmountJob"/> -->
+<!--         <property name="cronExpression" value="${taskcenter-job.syncDealAmount.quartz.expression}"/> -->
+<!--     </bean> -->
 
-    <!-- MySQL sql converter -->
-    <bean id="mysqlConverter" class="com.dianping.avatar.dao.ibatis.MySqlConverter"/>
+<!--     同步销售组织架构 -->
+<!--     <bean id="syncSalesOrgnizationJob" -->
+<!--           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> -->
+<!--         <property name="targetObject" ref="syncSalesOrgnization"/> -->
+<!--         <property name="targetMethod" value="go"/> -->
+<!--         <property name="concurrent" value="false"/> -->
+<!--     </bean> -->
+
+<!--     <bean id="syncSalesOrgnizationExtCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> -->
+<!--         <property name="jobDetail" ref="syncSalesOrgnizationJob"/> -->
+<!--         <property name="cronExpression" value="${taskcenter-job.syncSalesOrgnization.quartz.expression}"/> -->
+<!--     </bean> -->
+
+
+<!--     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> -->
+<!--         <property name="jobDetails"> -->
+<!--             <list> -->
+<!--                 <ref bean="syncDealAmountJob" /> -->
+<!--                 <ref bean="syncSalesOrgnizationJob" /> -->
+<!--             </list> -->
+<!--         </property> -->
+<!--         <property name="triggers"> -->
+<!--             <list> -->
+<!--                 <ref bean="syncDealAmountExtCronTrigger" /> -->
+<!--                 <ref bean="syncSalesOrgnizationExtCronTrigger" /> -->
+<!--             </list> -->
+<!--         </property> -->
+<!--     </bean> -->
+
+<!--     <bean id="parentDao" class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true"> -->
+<!--         <property name="interceptorNames"> -->
+<!--             <list> -->
+<!--                 <value>daoAutoRealizerAdvisor</value> -->
+<!--             </list> -->
+<!--         </property> -->
+<!--     </bean> -->
+
+<!--     MySQL sql converter -->
+<!--     <bean id="mysqlConverter" class="com.dianping.avatar.dao.ibatis.MySqlConverter"/> -->
 
 </beans>

@@ -6,57 +6,57 @@
     <appender name="CONSOLE" class="com.dianping.combiz.misc.ExtendedConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[mapcentter-service]%d %-5p [%c %L] %m%n"/>
+            <param name="ConversionPattern" value="[customer-tool-job]%d %-5p [%c %L] %m%n"/>
         </layout>
     </appender>
 
     <appender name="avatarAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/taskcenter-job/logs/avatar.log"/>
+        <param name="File" value="/data/applogs/customer-tool-job/logs/avatar.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-job]%d %-5p [%c %L] %m%n"/>
+            <param name="ConversionPattern" value="[customer-tool-job]%d %-5p [%c %L] %m%n"/>
         </layout>
     </appender>
 
     <appender name="appAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/taskcenter-job/logs/app.log"/>
+        <param name="File" value="/data/applogs/customer-tool-job/logs/app.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-job]%d %-5p [%c %L] %m%n"/>
+            <param name="ConversionPattern" value="[customer-tool-job]%d %-5p [%c %L] %m%n"/>
         </layout>
     </appender>
 
     <appender name="ibatisAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/taskcenter-job/logs/ibatis.log"/>
+        <param name="File" value="/data/applogs/customer-tool-job/logs/ibatis.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-job]%d %-5p [%c %L] %m%n"/>
+            <param name="ConversionPattern" value="[customer-tool-job]%d %-5p [%c %L] %m%n"/>
         </layout>
     </appender>
 
     <appender name="illegalAccessAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/taskcenter-job/logs/illegalAccess.log"/>
+        <param name="File" value="/data/applogs/customer-tool-job/logs/illegalAccess.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-job]%d %-5p [%c %L] %m%n"/>
+            <param name="ConversionPattern" value="[customer-tool-job]%d %-5p [%c %L] %m%n"/>
         </layout>
     </appender>
 
     <appender name="illegalParameterAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/taskcenter-job/logs/illegalParameter.log"/>
+        <param name="File" value="/data/applogs/customer-tool-job/logs/illegalParameter.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-job]%d %-5p [%c %L] %m%n"/>
+            <param name="ConversionPattern" value="[customer-tool-job]%d %-5p [%c %L] %m%n"/>
         </layout>
     </appender>
 
     <appender name="mongodbViewHitStatisticsAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/taskcenter-job/logs/viewHitStatistics.log"/>
+        <param name="File" value="/data/applogs/customer-tool-job/logs/viewHitStatistics.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-job]%d %-5p [%c %L] %m%n"/>
+            <param name="ConversionPattern" value="[customer-tool-job]%d %-5p [%c %L] %m%n"/>
         </layout>
     </appender>
 
     <appender name="HAWK" class="com.dianping.hawk.HawkAppender">
-        <param name="key1" value="taskcenter-job"/>
+        <param name="key1" value="customer-tool-job"/>
         <param name="key2" value="web"/>
         <param name="cacheTimeMillis" value="10000"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -65,7 +65,7 @@
     </appender>
 
     <appender name="pagePerformanceAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/taskcenter-job/logs/pagePerformance.log"/>
+        <param name="File" value="/data/applogs/customer-tool-job/logs/pagePerformance.log"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="TIME:%d--%m%n"/>
         </layout>

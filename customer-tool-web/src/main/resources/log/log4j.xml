@@ -5,45 +5,45 @@
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-web]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="avatarAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/taskcenter-web/logs/avatar.log" />
+        <param name="File" value="/data/applogs/customer-tool-web/logs/avatar.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-web]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="appAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/taskcenter-web/logs/app.log" />
+        <param name="File" value="/data/applogs/customer-tool-web/logs/app.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-web]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="ibatisAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/taskcenter-web/logs/ibatis.log" />
+        <param name="File" value="/data/applogs/customer-tool-web/logs/ibatis.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-web]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="illegalAccessAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/taskcenter-web/logs/illegalAccess.log" />
+        <param name="File" value="/data/applogs/customer-tool-web/logs/illegalAccess.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-web]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="illegalParameterAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/taskcenter-web/logs/illegalParameter.log" />
+        <param name="File" value="/data/applogs/customer-tool-web/logs/illegalParameter.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[taskcenter-web]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-web]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
