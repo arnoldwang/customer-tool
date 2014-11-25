@@ -6,9 +6,9 @@
        <!-- The main DB DataSource configuration -->
        <bean id="main.master" class="com.mchange.v2.c3p0.ComboPooledDataSource"
              destroy-method="close">
-              <property name="jdbcUrl" value="${customerinfo-biz.main-db.master.jdbc.url}"/>
-              <property name="user" value="${customerinfo-biz.main-db.master.jdbc.username}"/>
-              <property name="password" value="${customerinfo-biz.main-db.master.jdbc.password}"/>
+              <property name="jdbcUrl" value="${customer-tool-web.main-db.master.jdbc.url}"/>
+              <property name="user" value="${customer-tool-web.main-db.master.jdbc.username}"/>
+              <property name="password" value="${customer-tool-web.main-db.master.jdbc.password}"/>
               <property name="driverClass" value="com.mysql.jdbc.Driver"/>
               <property name="minPoolSize" value="5"/>
               <property name="maxPoolSize" value="30"/>
@@ -26,9 +26,9 @@
 
        <bean id="main.slave" class="com.mchange.v2.c3p0.ComboPooledDataSource"
              destroy-method="close">
-              <property name="jdbcUrl" value="${customerinfo-biz.main-db.master.jdbc.url}"/>
-              <property name="user" value="${customerinfo-biz.main-db.master.jdbc.username}"/>
-              <property name="password" value="${customerinfo-biz.main-db.master.jdbc.password}"/>
+              <property name="jdbcUrl" value="${customer-tool-web.main-db.master.jdbc.url}"/>
+              <property name="user" value="${customer-tool-web.main-db.master.jdbc.username}"/>
+              <property name="password" value="${customer-tool-web.main-db.master.jdbc.password}"/>
               <property name="driverClass" value="com.mysql.jdbc.Driver"/>
               <property name="minPoolSize" value="5"/>
               <property name="maxPoolSize" value="30"/>
