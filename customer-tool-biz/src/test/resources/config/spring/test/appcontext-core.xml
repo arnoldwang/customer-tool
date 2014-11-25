@@ -7,10 +7,6 @@
 
        http://www.dianping.com/schema/avatar http://www.dianping.com/schema/avatar/avatar-1.0.xsd">
 
-
-    <avatar:cache jms-url="${cache.jms.url}" topic-name="${cache.jms.topic.name}" jms-username="${cache.jms.username}"
-                  jms-password="${cache.jms.password}"/>
-
     <bean id="placeholder" class="com.dianping.lion.client.SpringConfig">
         <property name="propertiesPath" value="config/applicationContext.properties"/>
     </bean>

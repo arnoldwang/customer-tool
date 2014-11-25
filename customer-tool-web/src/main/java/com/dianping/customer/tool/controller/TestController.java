@@ -1,14 +1,19 @@
 package com.dianping.customer.tool.controller;
 
+import com.dianping.customer.tool.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class TestController {
+    @Autowired
+    private Test test;
 
-    @RequestMapping("/simple")
+    @RequestMapping("/test")
     public @ResponseBody String simple() {
-        return "Hello world!";
+        String s = test.test();
+        return s;
     }
 }
