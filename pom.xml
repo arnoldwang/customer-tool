@@ -47,11 +47,6 @@
             <!-- beginning of dp common -->
             <dependency>
                 <groupId>com.dianping</groupId>
-                <artifactId>customerinfo-api</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.dianping</groupId>
                 <artifactId>customer-data-api</artifactId>
                 <version>${customer-data-api.version}</version>
             </dependency>

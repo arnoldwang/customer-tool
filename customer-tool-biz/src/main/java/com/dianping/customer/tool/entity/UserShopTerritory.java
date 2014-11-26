@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * User: Administrator
+ * User: zhenwei.wang
  * Date: 14-11-26
  * Time: 上午11:49
  */
@@ -22,7 +22,7 @@ public class UserShopTerritory implements Serializable {
 	/**
 	 * ShopID
 	 */
-	private int shopID;
+	private int newShopID;
 
 	/**
 	 * Territory id
@@ -89,12 +89,12 @@ public class UserShopTerritory implements Serializable {
 		this.userID = userID;
 	}
 
-	public int getShopID() {
-		return shopID;
+	public int getNewShopID() {
+		return newShopID;
 	}
 
-	public void setShopID(int shopID) {
-		this.shopID = shopID;
+	public void setNewShopID(int newShopID) {
+		this.newShopID = newShopID;
 	}
 
 	public int getTerritoryID() {
