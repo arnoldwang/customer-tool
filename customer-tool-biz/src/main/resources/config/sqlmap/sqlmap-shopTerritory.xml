@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ShopTerritory">
+    <typeAlias alias="ShopTerritory" type="com.dianping.customer.tool.entity.ShopTerritory"/>
+
+    <resultMap id="shopTerritory" class="ShopTerritory">
+        <result property="id" column="ID"/>
+        <result property="shopTerritoryID" column="ShopTerritoryID"/>
+        <result property="newShopID" column="NewShopID"/>
+        <result property="territoryID" column="TerritoryID"/>
+        <result property="kabc" column="Kabc"/>
+        <result property="tgReleaseDate" column="TgReleaseDate"/>
+        <result property="tgOfflineDate" column="TgOfflineDate"/>
+        <result property="cooperationStatus" column="CooperationStatus"/>
+        <result property="status" column="Status"/>
+        <result property="createdTime" column="CreatedTime"/>
+        <result property="createdBy" column="CreatedBy"/>
+        <result property="lastModifiedTime" column="LastModifiedTime"/>
+        <result property="lastModifiedBy" column="LastModifiedBy"/>
+        <result property="approveID" column="ApproveID"/>
+        <result property="approveBy" column="ApproveBy"/>
+        <result property="approveStatus" column="ApproveStatus"/>
+        <result property="approveComment" column="ApproveComment"/>
+    </resultMap>
+
+    <select id="queryShopTerritoryByNewShopID" resultMap="shopTerritory" parameterClass="map">
+      SELECT
+          ID,
+          ShopTerritoryID,
+          NewShopID,
+          TerritoryID,
+          Kabc,
+          TgReleaseDate,
+          TgOfflineDate,
+          CooperationStatus,
+          Status,
+          CreatedTime,
+          CreatedBy,
+          LastModifiedTime,
+          LastModifiedBy,
+          ApproveID,
+          ApproveBy,
+          ApproveStatus,
+          ApproveComment
+      FROM MR_ShopTerritory
+      WHERE NewShopID = #newShopID#
+      LIMIT 10000
+    </select>
+</sqlMap>

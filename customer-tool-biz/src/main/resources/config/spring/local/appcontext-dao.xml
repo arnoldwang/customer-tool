@@ -15,7 +15,7 @@
               <constructor-arg>
                      <map>
                      <entry key="PACKAGE_NAME" value="com.dianping.customer.tool.dao"/>
-                     <entry key="PARENT_DAO_NAME" value="testDaoSql"/>
+                     <entry key="PARENT_DAO_NAME" value="customer-tool-sqlMapClient.daoRealize"/>
                      </map>
               </constructor-arg>
        </bean>
