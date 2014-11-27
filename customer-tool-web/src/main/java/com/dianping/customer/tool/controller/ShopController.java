@@ -5,10 +5,8 @@ import com.dianping.customer.tool.model.ShopInfoModel;
 import com.dianping.customer.tool.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -21,18 +19,18 @@ public class ShopController {
     @Autowired
     ShopService shopService;
 
-    @RequestMapping(value="/{shopId}",method= RequestMethod.GET)
+    @RequestMapping(method= RequestMethod.GET)
     @ResponseBody
-    public ServiceResult getShopInfo(HttpServletRequest request,@PathVariable("shopId") String shopId) {
+    public ServiceResult getShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
         ServiceResult serviceResult = new ServiceResult();
         ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
-        serviceResult.setMsg(shopInfoModel);
+		serviceResult.setMsg(shopInfoModel);
         return serviceResult;
     }
 
-	@RequestMapping(value="/{shopId}/territory",method= RequestMethod.PUT)
+	@RequestMapping(value="/territory",method= RequestMethod.PUT)
 	@ResponseBody
-	public ServiceResult updateShopInfo(HttpServletRequest request,@PathVariable("shopId") String shopId) {
+	public ServiceResult updateShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
 		ServiceResult serviceResult = new ServiceResult();
 		shopService.updateShopInfo(shopId);
 		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
@@ -40,9 +38,9 @@ public class ShopController {
 		return serviceResult;
 	}
 
-	@RequestMapping(value="/{shopId}/userShop",method= RequestMethod.PUT)
+	@RequestMapping(value="/userShop",method= RequestMethod.PUT)
 	@ResponseBody
-	public ServiceResult updateUserShopInfo(HttpServletRequest request,@PathVariable("shopId") String shopId) {
+	public ServiceResult updateUserShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
 		ServiceResult serviceResult = new ServiceResult();
 		shopService.updateUserShopInfo(shopId);
 		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
