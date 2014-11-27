@@ -7,4 +7,8 @@ import com.dianping.customer.tool.model.ShopInfoModel;
  */
 public interface ShopService {
     public ShopInfoModel getShopInfo(String shopId);
+
+	public void updateShopInfo(String shopId);
+
+	public void updateUserShopInfo(String shopId);
 }

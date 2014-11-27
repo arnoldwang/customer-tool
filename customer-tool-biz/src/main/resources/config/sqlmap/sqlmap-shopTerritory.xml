@@ -41,9 +41,58 @@
           ApproveID,
           ApproveBy,
           ApproveStatus,
-          ApproveComment
+          ApproveComment,
+          ExternalId
       FROM MR_ShopTerritory
       WHERE NewShopID = #newShopID#
       LIMIT 10000
     </select>
+
+    <insert id="addToShopTerritory" parameterClass="map">
+        INSERT INTO MR_ShopTerritory
+            (
+            ShopTerritoryID,
+            NewShopID,
+            TerritoryID,
+            Kabc,
+            TgReleaseDate,
+            TgOfflineDate,
+            CooperationStatus,
+            Status,
+            CreatedTime,
+            CreatedBy,
+            LastModifiedTime,
+            LastModifiedBy,
+            ApproveID,
+            ApproveBy,
+            ApproveStatus,
+            ApproveComment,
+            ExternalId
+            )
+        VALUES
+            (
+            #shopTerritory.shopTerritoryID#,
+            #shopTerritory.newShopID#,
+            #shopTerritory.territoryID#,
+            #shopTerritory.kabc#,
+            #shopTerritory.tgReleaseDate#,
+            #shopTerritory.tgOfflineDate#,
+            #shopTerritory.cooperationStatus#,
+            #shopTerritory.status#,
+            #shopTerritory.createdTime#,
+            #shopTerritory.createdBy#,
+            NOW(),
+            #shopTerritory.lastModifiedBy#,
+            #shopTerritory.approveID#,
+            #shopTerritory.approveBy#,
+            #shopTerritory.approveStatus#,
+            #shopTerritory.approveComment#,
+            #shopTerritory.externalID#
+            );
+    </insert>
+
+    <delete id="deleteShopTerritoryByNewShopID" parameterClass="map">
+        DELETE FROM MR_ShopTerritory
+        WHERE NewShopID = #newShopID#
+    </delete>
 </sqlMap>

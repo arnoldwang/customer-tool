@@ -16,4 +16,10 @@ import java.util.List;
 public interface ShopTerritoryDao extends GenericDao {
 	@DAOAction(action = DAOActionType.QUERY)
 	List<ShopTerritory> queryShopTerritoryByNewShopID(@DAOParam("newShopID") int newShopID);
+
+	@DAOAction(action = DAOActionType.INSERT)
+	void addToShopTerritory(@DAOParam("shopTerritory") ShopTerritory shopTerritory);
+
+	@DAOAction(action = DAOActionType.DELETE)
+	void deleteShopTerritoryByNewShopID(@DAOParam("newShopID") int newShopID);
 }

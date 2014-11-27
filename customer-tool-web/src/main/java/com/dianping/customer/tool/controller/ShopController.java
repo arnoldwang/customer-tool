@@ -29,4 +29,24 @@ public class ShopController {
         serviceResult.setMsg(shopInfoModel);
         return serviceResult;
     }
+
+	@RequestMapping(value="/{shopId}/territory",method= RequestMethod.PUT)
+	@ResponseBody
+	public ServiceResult updateShopInfo(HttpServletRequest request,@PathVariable("shopId") String shopId) {
+		ServiceResult serviceResult = new ServiceResult();
+		shopService.updateShopInfo(shopId);
+		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
+		serviceResult.setMsg(shopInfoModel);
+		return serviceResult;
+	}
+
+	@RequestMapping(value="/{shopId}/userShop",method= RequestMethod.PUT)
+	@ResponseBody
+	public ServiceResult updateUserShopInfo(HttpServletRequest request,@PathVariable("shopId") String shopId) {
+		ServiceResult serviceResult = new ServiceResult();
+		shopService.updateUserShopInfo(shopId);
+		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
+		serviceResult.setMsg(shopInfoModel);
+		return serviceResult;
+	}
 }

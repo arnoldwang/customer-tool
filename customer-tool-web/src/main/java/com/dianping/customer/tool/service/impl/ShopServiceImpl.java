@@ -10,6 +10,7 @@ import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.model.ShopInfoModel;
 import com.dianping.customer.tool.service.ShopService;
 import com.dianping.customer.tool.utils.SalesforceOauthTokenUtil;
+import com.dianping.salesbu.api.UserGroupService;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -39,22 +40,34 @@ public class ShopServiceImpl implements ShopService {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private UserGroupService userGroupService;
+
 	private String smtShopInfoURL;
 
-	@Override
-	public ShopInfoModel getShopInfo(String shopId) {
-		ShopInfoModel shopInfoModel = new ShopInfoModel();
+	public ServiceResult getSalesForceInfo(String shopId) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + salesforceOauthTokenUtil.getLoginToken());
 		Map<String, String> uriVariables = Maps.newHashMap();
 		uriVariables.put("shopId", shopId);
 		String url = getRESTUrl(smtShopInfoURL);
 		ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-		ServiceResult result = response.getBody();
-		Map<String, Object> msg = (HashMap<String, Object>) result.getMsg();
+		return response.getBody();
+	}
+
+
+	@Override
+	public ShopInfoModel getShopInfo(String shopId) {
+		ShopInfoModel shopInfoModel = new ShopInfoModel();
+		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
 		//todo
-		List<ShopTerritory> shopTerritory = shopTerritoryDao.queryShopTerritoryByNewShopID(Integer.valueOf(shopId));
-		UserShopTerritory userShopTerritory = userShopTerritoryDao.queryUserShopTerritoryByNewShopID(Integer.valueOf(shopId)).get(0);
+		List<ShopTerritory> shopTerritoryList = shopTerritoryDao.queryShopTerritoryByNewShopID(Integer.valueOf(shopId));
+		List<UserShopTerritory> userShopTerritoryList = userShopTerritoryDao.queryUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
+		UserShopTerritory userShopTerritory = new UserShopTerritory();
+		for (UserShopTerritory ust : userShopTerritoryList) {
+			if (userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台"))
+				userShopTerritory = ust;
+		}
 		UserDto user = userService.queryUserByLoginID(userShopTerritory.getUserID());
 
 		shopInfoModel.setShopId(shopId);
@@ -65,17 +78,47 @@ public class ShopServiceImpl implements ShopService {
 
 		shopInfoModel.setJhBU(msg.get("isJHBU").equals("true"));
 		shopInfoModel.setHotelBU(msg.get("isJDLY").equals("true"));
-		shopInfoModel.setVip(msg.get("type").equals("vip"));//??
-		shopInfoModel.setSfOwner((String)msg.get("ownerName"));
-		shopInfoModel.setSfLoginId((String)msg.get("ownerLoginId"));
+		shopInfoModel.setVip(msg.get("type").equals("大客户"));//普通客户，大客户
+		shopInfoModel.setSfOwner((String) msg.get("ownerName"));
+		shopInfoModel.setSfLoginId((String) msg.get("ownerLoginId"));
 		shopInfoModel.setApolloOwner(user.getRealName());
 		shopInfoModel.setApolloLoginId(String.valueOf(user.getLoginId()));
-		shopInfoModel.setSfTerritoryId2Name((LinkedHashMap<String, String>)msg.get("territoryId2Name"));
+		shopInfoModel.setSfTerritoryId2Name((LinkedHashMap<String, String>) msg.get("territoryId2Name"));
 		List<String> apolloTerritoryIds = new ArrayList<String>();
-		for(ShopTerritory st: shopTerritory)
+		for (ShopTerritory st : shopTerritoryList)
 			apolloTerritoryIds.add(String.valueOf(st.getTerritoryID()));
 		shopInfoModel.setApolloTerritoryIds(apolloTerritoryIds);
 		return shopInfoModel;
+	}
+
+	@Override
+	public void updateShopInfo(String shopId) {
+		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
+		shopTerritoryDao.deleteShopTerritoryByNewShopID(Integer.valueOf(shopId));
+		ShopTerritory shopTerritory = new ShopTerritory();
+		Map<String, String> territoryId2Name = (LinkedHashMap<String, String>) msg.get("territoryId2Name");
+		Iterator<String> iter = territoryId2Name.keySet().iterator();
+		while(iter.hasNext()){
+			String territoryID = iter.next();
+			shopTerritory.setExternalID(msg.get("sfId") + "-" + territoryID);
+			shopTerritory.setNewShopID(Integer.valueOf(shopId));
+			shopTerritory.setTerritoryID(Integer.valueOf(territoryID));
+			shopTerritory.setStatus(1);
+			shopTerritory.setApproveStatus(1);
+			shopTerritoryDao.addToShopTerritory(shopTerritory);
+		}
+	}
+
+	@Override
+	public void updateUserShopInfo(String shopId) {
+		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
+		userShopTerritoryDao.deleteUserShopTerritoryByUserID(Integer.valueOf((String) msg.get("ownerLoginId")));
+		UserShopTerritory userShopTerritory = new UserShopTerritory();
+		userShopTerritory.setUserID(Integer.valueOf((String)msg.get("ownerLoginId")));
+		userShopTerritory.setNewShopID(Integer.valueOf(shopId));
+		userShopTerritory.setStatus(1);
+		userShopTerritory.setApproveStatus(1);
+		userShopTerritoryDao.addToUserShopTerritory(userShopTerritory);
 	}
 
 	private String getRESTUrl(String hostUrl) {

@@ -65,6 +65,8 @@ public class UserShopTerritory implements Serializable {
 	 */
 	private String approveComment;
 
+	private String externalID;
+
 	public long getId() {
 		return id;
 	}
@@ -175,5 +177,13 @@ public class UserShopTerritory implements Serializable {
 
 	public void setApproveComment(String approveComment) {
 		this.approveComment = approveComment;
+	}
+
+	public String getExternalID() {
+		return externalID;
+	}
+
+	public void setExternalID(String externalID) {
+		this.externalID = externalID;
 	}
 }

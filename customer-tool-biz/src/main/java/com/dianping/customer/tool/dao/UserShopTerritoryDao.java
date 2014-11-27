@@ -17,4 +17,10 @@ public interface UserShopTerritoryDao extends GenericDao {
 
 	@DAOAction(action = DAOActionType.QUERY)
 	List<UserShopTerritory> queryUserShopTerritoryByNewShopID(@DAOParam("newShopID")int newShopID);
+
+	@DAOAction(action = DAOActionType.INSERT)
+	void addToUserShopTerritory(@DAOParam("userShopTerritory") UserShopTerritory userShopTerritory);
+
+	@DAOAction(action = DAOActionType.DELETE)
+	void deleteUserShopTerritoryByUserID(@DAOParam("userID")int userID);
 }
