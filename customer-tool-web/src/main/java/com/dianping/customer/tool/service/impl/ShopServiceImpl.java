@@ -6,6 +6,7 @@ import com.dianping.customer.tool.dao.ShopTerritoryDao;
 import com.dianping.customer.tool.dao.UserShopTerritoryDao;
 import com.dianping.customer.tool.entity.ShopTerritory;
 import com.dianping.customer.tool.entity.UserShopTerritory;
+import com.dianping.customer.tool.exception.UserShopTerritoryException;
 import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.model.ShopInfoModel;
 import com.dianping.customer.tool.service.ShopService;
@@ -20,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zaza on 14/11/26.
@@ -58,11 +61,16 @@ public class ShopServiceImpl implements ShopService {
 
 	@Override
 	public ShopInfoModel getShopInfo(String shopId) {
+		if(!isNumeric(shopId))
+			throw new UserShopTerritoryException("您输入的ShopId不合法，请输入正确Id!");
+
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
 		//todo
 		List<ShopTerritory> shopTerritoryList = shopTerritoryDao.queryShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		List<UserShopTerritory> userShopTerritoryList = userShopTerritoryDao.queryUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
+		if(shopTerritoryList.size() == 0 || userShopTerritoryList.size() == 0)
+			throw new UserShopTerritoryException("未找到商户信息，请输入正确Id!");
 		UserShopTerritory userShopTerritory = new UserShopTerritory();
 		for (UserShopTerritory ust : userShopTerritoryList) {
 			if (userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台"))
@@ -98,7 +106,7 @@ public class ShopServiceImpl implements ShopService {
 		ShopTerritory shopTerritory = new ShopTerritory();
 		Map<String, String> territoryId2Name = (LinkedHashMap<String, String>) msg.get("territoryId2Name");
 		Iterator<String> iter = territoryId2Name.keySet().iterator();
-		while(iter.hasNext()){
+		while (iter.hasNext()) {
 			String territoryID = iter.next();
 			shopTerritory.setExternalID(msg.get("sfId") + "-" + territoryID);
 			shopTerritory.setNewShopID(Integer.valueOf(shopId));
@@ -114,7 +122,7 @@ public class ShopServiceImpl implements ShopService {
 		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
 		userShopTerritoryDao.deleteUserShopTerritoryByUserID(Integer.valueOf((String) msg.get("ownerLoginId")));
 		UserShopTerritory userShopTerritory = new UserShopTerritory();
-		userShopTerritory.setUserID(Integer.valueOf((String)msg.get("ownerLoginId")));
+		userShopTerritory.setUserID(Integer.valueOf((String) msg.get("ownerLoginId")));
 		userShopTerritory.setNewShopID(Integer.valueOf(shopId));
 		userShopTerritory.setStatus(1);
 		userShopTerritory.setApproveStatus(1);
@@ -128,5 +136,14 @@ public class ShopServiceImpl implements ShopService {
 
 	public void setSmtShopInfoURL(String smtShopInfoURL) {
 		this.smtShopInfoURL = smtShopInfoURL;
+	}
+
+	private boolean isNumeric(String str) {
+		Pattern pattern = Pattern.compile("[0-9]+");
+		Matcher isNum = pattern.matcher(str);
+		if (!isNum.matches()) {
+			return false;
+		}
+		return true;
 	}
 }

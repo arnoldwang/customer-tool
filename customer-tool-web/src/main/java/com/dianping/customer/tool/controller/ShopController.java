@@ -21,30 +21,30 @@ public class ShopController {
 
     @RequestMapping(method= RequestMethod.GET)
     @ResponseBody
-    public ServiceResult getShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
-        ServiceResult serviceResult = new ServiceResult();
+    public ShopInfoModel getShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
+//      	ServiceResult serviceResult = new ServiceResult();
         ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
-		serviceResult.setMsg(shopInfoModel);
-        return serviceResult;
+//		serviceResult.setMsg(shopInfoModel);
+        return shopInfoModel;
     }
 
 	@RequestMapping(value="/territory",method= RequestMethod.PUT)
 	@ResponseBody
-	public ServiceResult updateShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
-		ServiceResult serviceResult = new ServiceResult();
+	public ShopInfoModel updateShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
+//		ServiceResult serviceResult = new ServiceResult();
 		shopService.updateShopInfo(shopId);
 		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
-		serviceResult.setMsg(shopInfoModel);
-		return serviceResult;
+//		serviceResult.setMsg(shopInfoModel);
+		return shopInfoModel;
 	}
 
 	@RequestMapping(value="/userShop",method= RequestMethod.PUT)
 	@ResponseBody
-	public ServiceResult updateUserShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
-		ServiceResult serviceResult = new ServiceResult();
+	public ShopInfoModel updateUserShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
+//		ServiceResult serviceResult = new ServiceResult();
 		shopService.updateUserShopInfo(shopId);
 		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
-		serviceResult.setMsg(shopInfoModel);
-		return serviceResult;
+//		serviceResult.setMsg(shopInfoModel);
+		return shopInfoModel;
 	}
 }
