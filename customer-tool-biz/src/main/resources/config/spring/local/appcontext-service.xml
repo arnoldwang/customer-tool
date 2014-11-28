@@ -24,4 +24,8 @@
         <property name="password" value="${customerinfo-web.salesforce.token.password}"/>
         <property name="restTemplate" ref="restTemplate"/>
     </bean>
+
+    <bean id="shopServiceImpl" class="com.dianping.customer.tool.service.impl.ShopServiceImpl">
+        <property name="smtShopInfoURL" value="${customer-tool-web.salesforce.shopinfo.url}"/>
+    </bean>
 </beans>

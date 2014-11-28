@@ -47,6 +47,11 @@
             <!-- beginning of dp common -->
             <dependency>
                 <groupId>com.dianping</groupId>
+                <artifactId>customer-tool-biz</artifactId>
+                <version>${project.version.biz}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dianping</groupId>
                 <artifactId>customer-data-api</artifactId>
                 <version>${customer-data-api.version}</version>
             </dependency>

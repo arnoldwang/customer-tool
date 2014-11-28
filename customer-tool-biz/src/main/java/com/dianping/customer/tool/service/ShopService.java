@@ -1,5 +1,6 @@
 package com.dianping.customer.tool.service;
 
+
 import com.dianping.customer.tool.model.ShopInfoModel;
 
 /**
