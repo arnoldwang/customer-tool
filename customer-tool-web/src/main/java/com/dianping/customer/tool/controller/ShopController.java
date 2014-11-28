@@ -1,6 +1,5 @@
 package com.dianping.customer.tool.controller;
 
-import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.model.ShopInfoModel;
 import com.dianping.customer.tool.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,35 +15,29 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/shops")
 public class ShopController {
-    @Autowired
-    ShopService shopService;
+	@Autowired
+	ShopService shopService;
 
-    @RequestMapping(method= RequestMethod.GET)
-    @ResponseBody
-    public ShopInfoModel getShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
-//      	ServiceResult serviceResult = new ServiceResult();
-        ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
-//		serviceResult.setMsg(shopInfoModel);
-        return shopInfoModel;
-    }
-
-	@RequestMapping(value="/territory",method= RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public ShopInfoModel updateShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
-//		ServiceResult serviceResult = new ServiceResult();
-		shopService.updateShopInfo(shopId);
+	public ShopInfoModel getShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
 		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
-//		serviceResult.setMsg(shopInfoModel);
 		return shopInfoModel;
 	}
 
-	@RequestMapping(value="/userShop",method= RequestMethod.PUT)
+	@RequestMapping(value = "/territory", method = RequestMethod.POST)
 	@ResponseBody
-	public ShopInfoModel updateUserShopInfo(HttpServletRequest request,@RequestParam("shopId") String shopId) {
-//		ServiceResult serviceResult = new ServiceResult();
+	public ShopInfoModel updateShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
+		shopService.updateShopInfo(shopId);
+		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
+		return shopInfoModel;
+	}
+
+	@RequestMapping(value = "/userShop", method = RequestMethod.POST)
+	@ResponseBody
+	public ShopInfoModel updateUserShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
 		shopService.updateUserShopInfo(shopId);
 		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
-//		serviceResult.setMsg(shopInfoModel);
 		return shopInfoModel;
 	}
 }
