@@ -79,9 +79,9 @@
         );
     </insert>
 
-    <delete id="deleteUserShopTerritoryByUserID" parameterClass="map">
+    <delete id="deleteUserShopTerritoryByNewShopID" parameterClass="map">
         DELETE FROM MR_UserShopTerritory
-        WHERE UserID = #userID#
+        WHERE NewShopID = #newShopID#
     </delete>
 
 </sqlMap>

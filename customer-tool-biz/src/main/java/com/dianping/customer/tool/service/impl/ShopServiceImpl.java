@@ -120,7 +120,7 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public void updateUserShopInfo(String shopId) {
 		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
-		userShopTerritoryDao.deleteUserShopTerritoryByUserID(Integer.valueOf((String) msg.get("ownerLoginId")));
+		userShopTerritoryDao.deleteUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		UserShopTerritory userShopTerritory = new UserShopTerritory();
 		userShopTerritory.setUserID(Integer.valueOf((String) msg.get("ownerLoginId")));
 		userShopTerritory.setNewShopID(Integer.valueOf(shopId));
