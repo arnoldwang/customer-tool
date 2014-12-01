@@ -6,7 +6,7 @@ import com.dianping.customer.tool.dao.ShopTerritoryDao;
 import com.dianping.customer.tool.dao.UserShopTerritoryDao;
 import com.dianping.customer.tool.entity.ShopTerritory;
 import com.dianping.customer.tool.entity.UserShopTerritory;
-import com.dianping.customer.tool.exception.UserShopTerritoryException;
+import com.dianping.customer.tool.exception.BizException;
 import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.model.ShopInfoModel;
 import com.dianping.customer.tool.service.ShopService;
@@ -62,7 +62,7 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public ShopInfoModel getShopInfo(String shopId) {
 		if(!isNumeric(shopId))
-			throw new UserShopTerritoryException("您输入的ShopId不合法，请输入正确Id!");
+			throw new BizException("您输入的ShopId不合法，请输入正确Id!");
 
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
@@ -70,7 +70,7 @@ public class ShopServiceImpl implements ShopService {
 		List<ShopTerritory> shopTerritoryList = shopTerritoryDao.queryShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		List<UserShopTerritory> userShopTerritoryList = userShopTerritoryDao.queryUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		if(shopTerritoryList.size() == 0 || userShopTerritoryList.size() == 0)
-			throw new UserShopTerritoryException("未找到商户信息，请输入正确Id!");
+			throw new BizException("未找到商户信息，请输入正确Id!");
 		UserShopTerritory userShopTerritory = new UserShopTerritory();
 		for (UserShopTerritory ust : userShopTerritoryList) {
 			if (userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台"))

@@ -29,5 +29,4 @@
         <property name="smtShopInfoURL" value="${customer-tool-web.salesforce.shopinfo.url}"/>
     </bean>
 
-    <bean id="textExceptionViewer" class="com.dianping.customer.tool.exception.resolver.TextResolver" />
 </beans>

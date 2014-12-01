@@ -3,7 +3,5 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="shopServiceImpl" class="com.dianping.customer.tool.service.impl.ShopServiceImpl">
-        <property name="smtShopInfoURL" value="${customer-tool-web.salesforce.shopinfo.url}"/>
-    </bean>
+    <bean id="textExceptionViewer" class="com.dianping.customer.tool.exception.resolver.TextResolver" />
 </beans>

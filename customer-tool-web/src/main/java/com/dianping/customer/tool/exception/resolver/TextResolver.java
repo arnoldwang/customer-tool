@@ -1,6 +1,6 @@
 package com.dianping.customer.tool.exception.resolver;
 
-import com.dianping.customer.tool.exception.UserShopTerritoryException;
+import com.dianping.customer.tool.exception.BizException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -41,7 +41,7 @@ public class TextResolver implements HandlerExceptionResolver {
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        if (ex instanceof UserShopTerritoryException) {
+        if (ex instanceof BizException) {
             return new ModelAndView(new TextView(ex.getMessage()));
         }
         return null;
