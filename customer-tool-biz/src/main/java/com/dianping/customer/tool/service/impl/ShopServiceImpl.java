@@ -74,6 +74,8 @@ public class ShopServiceImpl implements ShopService {
 		for (UserShopTerritory ust : userShopTerritoryList) {
 			if (userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台"))
 				userShopTerritory = ust;
+			if(userService.queryUserByLoginID(Integer.valueOf(ust.getUserID())).getRealName().contains("销售公海"))
+				userShopTerritory = ust;
 		}
 		UserDto user = userService.queryUserByLoginID(userShopTerritory.getUserID());
 
@@ -99,7 +101,8 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
-	public void updateShopInfo(String shopId) {
+	public ShopInfoModel updateShopInfo(String shopId) {
+		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
 		shopTerritoryDao.deleteShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		ShopTerritory shopTerritory = new ShopTerritory();
@@ -114,10 +117,19 @@ public class ShopServiceImpl implements ShopService {
 			shopTerritory.setApproveStatus(1);
 			shopTerritoryDao.addToShopTerritory(shopTerritory);
 		}
+
+		List<ShopTerritory> shopTerritoryList = shopTerritoryDao.queryShopTerritoryByNewShopID(Integer.valueOf(shopId));
+		List<String> apolloTerritoryIds = new ArrayList<String>();
+		for (ShopTerritory st : shopTerritoryList)
+			apolloTerritoryIds.add(String.valueOf(st.getTerritoryID()));
+		shopInfoModel.setApolloTerritoryIds(apolloTerritoryIds);
+
+		return shopInfoModel;
 	}
 
 	@Override
-	public void updateUserShopInfo(String shopId) {
+	public ShopInfoModel updateUserShopInfo(String shopId) {
+		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
 		userShopTerritoryDao.deleteUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		UserShopTerritory userShopTerritory = new UserShopTerritory();
@@ -126,6 +138,15 @@ public class ShopServiceImpl implements ShopService {
 		userShopTerritory.setStatus(1);
 		userShopTerritory.setApproveStatus(1);
 		userShopTerritoryDao.addToUserShopTerritory(userShopTerritory);
+
+		List<UserShopTerritory> userShopTerritoryList = userShopTerritoryDao.queryUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
+		for (UserShopTerritory ust : userShopTerritoryList) {
+			if (userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台"))
+				userShopTerritory = ust;
+		}
+		UserDto user = userService.queryUserByLoginID(userShopTerritory.getUserID());
+		shopInfoModel.setApolloOwner(user.getRealName());
+		return shopInfoModel;
 	}
 
 	private String getRESTUrl(String hostUrl) {

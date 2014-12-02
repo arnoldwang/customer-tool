@@ -28,16 +28,14 @@ public class ShopController {
 	@RequestMapping(value = "/territory", method = RequestMethod.POST)
 	@ResponseBody
 	public ShopInfoModel updateShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
-		shopService.updateShopInfo(shopId);
-		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
+		ShopInfoModel shopInfoModel = shopService.updateShopInfo(shopId);
 		return shopInfoModel;
 	}
 
 	@RequestMapping(value = "/userShop", method = RequestMethod.POST)
 	@ResponseBody
 	public ShopInfoModel updateUserShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
-		shopService.updateUserShopInfo(shopId);
-		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
+		ShopInfoModel shopInfoModel = shopService.updateUserShopInfo(shopId);
 		return shopInfoModel;
 	}
 }
