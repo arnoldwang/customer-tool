@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="UserShopTerritory">
-    <typeAlias alias="UserShopTerritory" type="com.dianping.customer.tool.entity.UserShopTerritory" />
+    <typeAlias alias="UserShopTerritory" type="com.dianping.customer.tool.entity.UserShopTerritory"/>
 
     <resultMap id="userShopTerritory" class="UserShopTerritory">
         <result property="id" column="ID"/>
         <result property="userShopTerritoryID" column="UserShopTerritoryID"/>
-        <result property="userID" column="UserID" />
+        <result property="userID" column="UserID"/>
         <result property="newShopID" column="NewShopID"/>
         <result property="territoryID" column="TerritoryID"/>
         <result property="status" column="Status"/>
@@ -19,7 +19,12 @@
         <result property="approveStatus" column="ApproveStatus"/>
         <result property="approveComment" column="ApproveComment"/>
     </resultMap>
-    
+
+    <resultMap id="userShop" class="UserShopTerritory">
+        <result property="userID" column="UserID"/>
+        <result property="newShopID" column="NewShopID"/>
+    </resultMap>
+
     <select id="queryUserShopTerritoryByNewShopID" resultMap="userShopTerritory" parameterClass="map">
         SELECT
             ID,
@@ -83,5 +88,68 @@
         DELETE FROM MR_UserShopTerritory
         WHERE NewShopID = #newShopID#
     </delete>
+
+    <select id="queryUserShopTerritoryByNewShopIDList" resultMap="userShop" parameterClass="map">
+        SELECT
+        us.UserID,
+        us.NewShopID
+        FROM MR_UserShopTerritory us
+        WHERE us.NewShopID IN
+        <iterate property="newShopIDList" open="(" close=")" conjunction=",">
+            #newShopIDList[]#
+        </iterate>
+
+    </select>
+
+    <delete id="deleteUserShopTerritoryByUserShopList" parameterClass="map">
+        DELETE FROM MR_UserShopTerritory us
+        WHERE (us.UserID,us.NewShopID) IN
+        <iterate property="userShopList" conjunction=",">
+            (#userShopList[].userID#, #userShopList[].newShopID#)
+        </iterate>
+    </delete>
+
+    <insert id="addToUserShopTerritoryByUserShopTerritoryList" parameterClass="map">
+        <![CDATA[
+            INSERT INTO MR_UserShopTerritory
+            (
+            UserShopTerritoryID,
+            UserID,
+            NewShopID,
+            TerritoryID,
+            Status,
+            CreatedTime,
+            CreatedBy,
+            LastModifiedTime,
+            LastModifiedBy,
+            ApproveID,
+            ApproveBy,
+            ApproveStatus,
+            ApproveComment,
+            ExternalId
+            )
+        VALUES
+        ]]>
+        <iterate property="userShopTerritoryList" conjunction=",">
+            <![CDATA[
+                (
+                #userShopTerritoryList[].userShopTerritoryID#,
+                #userShopTerritoryList[].userID#,
+                #userShopTerritoryList[].newShopID#,
+                #userShopTerritoryList[].territoryID#,
+                #userShopTerritoryList[].status#,
+                #userShopTerritoryList[].createdTime#,
+                #userShopTerritoryList[].createdBy#,
+                NOW(),
+                #userShopTerritoryList[].lastModifiedBy#,
+                #userShopTerritoryList[].approveID#,
+                #userShopTerritoryList[].approveBy#,
+                #userShopTerritoryList[].approveStatus#,
+                #userShopTerritoryList[].approveComment#,
+                #userShopTerritoryList[].externalID#
+                )
+            ]]>
+        </iterate>
+    </insert>
 
 </sqlMap>
