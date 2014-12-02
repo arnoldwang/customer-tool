@@ -61,16 +61,15 @@ public class ShopServiceImpl implements ShopService {
 
 	@Override
 	public ShopInfoModel getShopInfo(String shopId) {
-		if(!isNumeric(shopId))
+		if (!isNumeric(shopId))
 			throw new BizException("您输入的ShopId不合法，请输入正确Id!");
 
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> msg = (HashMap<String, Object>) getSalesForceInfo(shopId).getMsg();
-		//todo
+		if (msg.get("shopId") == null)
+			throw new BizException("未找到商户信息，请输入正确Id!");
 		List<ShopTerritory> shopTerritoryList = shopTerritoryDao.queryShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		List<UserShopTerritory> userShopTerritoryList = userShopTerritoryDao.queryUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
-		if(shopTerritoryList.size() == 0 || userShopTerritoryList.size() == 0)
-			throw new BizException("未找到商户信息，请输入正确Id!");
 		UserShopTerritory userShopTerritory = new UserShopTerritory();
 		for (UserShopTerritory ust : userShopTerritoryList) {
 			if (userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台"))
