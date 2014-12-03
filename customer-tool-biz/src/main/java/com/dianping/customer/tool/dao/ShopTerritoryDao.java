@@ -6,6 +6,7 @@ import com.dianping.avatar.dao.annotation.DAOActionType;
 import com.dianping.avatar.dao.annotation.DAOParam;
 import com.dianping.customer.tool.entity.ShopTerritory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,4 +23,13 @@ public interface ShopTerritoryDao extends GenericDao {
 
 	@DAOAction(action = DAOActionType.DELETE)
 	void deleteShopTerritoryByNewShopID(@DAOParam("newShopID") int newShopID);
+
+	@DAOAction(action = DAOActionType.QUERY)
+	List<ShopTerritory> queryShopTerritoryByNewShopIDList(@DAOParam("newShopIDList") ArrayList<String> newShopIDList);
+
+	@DAOAction(action = DAOActionType.DELETE)
+	void deleteShopTerritoryByShopTerritoryList(@DAOParam("shopTerritoryList") List<ShopTerritory> shopTerritoryList);
+
+	@DAOAction(action = DAOActionType.INSERT)
+	void addToShopTerritoryByShopTerritoryList(@DAOParam("newShopTerritoryList") List<ShopTerritory> newShopTerritoryList);
 }

@@ -18,6 +18,7 @@
         <result property="approveBy" column="ApproveBy"/>
         <result property="approveStatus" column="ApproveStatus"/>
         <result property="approveComment" column="ApproveComment"/>
+        <result property="externalID" column="ExternalId" />
     </resultMap>
 
     <resultMap id="userShop" class="UserShopTerritory">
@@ -102,9 +103,9 @@
     </select>
 
     <delete id="deleteUserShopTerritoryByUserShopList" parameterClass="map">
-        DELETE FROM MR_UserShopTerritory us
-        WHERE (us.UserID,us.NewShopID) IN
-        <iterate property="userShopList" conjunction=",">
+        DELETE FROM MR_UserShopTerritory
+        WHERE (UserID, NewShopID) IN
+        <iterate property="userShopList" open="(" close=")" conjunction=",">
             (#userShopList[].userID#, #userShopList[].newShopID#)
         </iterate>
     </delete>
@@ -128,7 +129,7 @@
             ApproveComment,
             ExternalId
             )
-        VALUES
+            VALUES
         ]]>
         <iterate property="userShopTerritoryList" conjunction=",">
             <![CDATA[

@@ -66,19 +66,20 @@
     </logger>
 
     <logger name="com.ibatis" additivity="false">
-        <level value="WARN" />
+        <level value="DEBUG" />
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="ibatisAppender" />
+
     </logger>
 
-    <logger name="java.sql">
-        <level value="WARN" />
+    <logger name="java.sql"  additivity="false">
+        <level value="DEBUG" />
+        <appender-ref ref="CONSOLE" />
     </logger>
 
     <root>
-        <level value="INFO" />
+        <level value="ERROR" />
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="appAppender" />
+
     </root>
 
 </log4j:configuration>

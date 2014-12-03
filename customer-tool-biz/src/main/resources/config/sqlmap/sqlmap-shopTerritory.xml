@@ -21,7 +21,14 @@
         <result property="approveBy" column="ApproveBy"/>
         <result property="approveStatus" column="ApproveStatus"/>
         <result property="approveComment" column="ApproveComment"/>
+        <result property="externalID" column="ExternalId" />
     </resultMap>
+
+    <resultMap id="shopTerritoryList" class="ShopTerritory">
+        <result property="newShopID" column="NewShopID"/>
+        <result property="territoryID" column="TerritoryID"/>
+    </resultMap>
+
 
     <select id="queryShopTerritoryByNewShopID" resultMap="shopTerritory" parameterClass="map">
       SELECT
@@ -95,4 +102,68 @@
         DELETE FROM MR_ShopTerritory
         WHERE NewShopID = #newShopID#
     </delete>
+
+    <select id="queryShopTerritoryByNewShopIDList" resultMap="shopTerritoryList" parameterClass="map">
+        SELECT
+        st.NewShopID,
+        st.TerritoryID
+        FROM MR_ShopTerritory st
+        WHERE st.NewShopID IN
+        <iterate property="newShopIDList" open="(" close=")" conjunction=",">
+            #newShopIDList[]#
+        </iterate>
+    </select>
+
+    <delete id="deleteShopTerritoryByShopTerritoryList" parameterClass="map">
+        DELETE FROM MR_ShopTerritory
+        WHERE (NewShopID, TerritoryID) IN
+        <iterate property="shopTerritoryList" open="(" close=")" conjunction=",">
+            (#shopTerritoryList[].newShopID#, #shopTerritoryList[].territoryID#)
+        </iterate>
+    </delete>
+
+    <insert id="addToShopTerritoryByShopTerritoryList" parameterClass="map">
+        INSERT INTO MR_ShopTerritory
+            (
+            ShopTerritoryID,
+            NewShopID,
+            TerritoryID,
+            Kabc,
+            TgReleaseDate,
+            TgOfflineDate,
+            CooperationStatus,
+            Status,
+            CreatedTime,
+            CreatedBy,
+            LastModifiedTime,
+            LastModifiedBy,
+            ApproveID,
+            ApproveBy,
+            ApproveStatus,
+            ApproveComment,
+            ExternalId
+            )
+        VALUES
+        <iterate property="newShopTerritoryList" conjunction=",">
+            (
+            #newShopTerritoryList[].shopTerritoryID#,
+            #newShopTerritoryList[].newShopID#,
+            #newShopTerritoryList[].territoryID#,
+            #newShopTerritoryList[].kabc#,
+            #newShopTerritoryList[].tgReleaseDate#,
+            #newShopTerritoryList[].tgOfflineDate#,
+            #newShopTerritoryList[].cooperationStatus#,
+            #newShopTerritoryList[].status#,
+            #newShopTerritoryList[].createdTime#,
+            #newShopTerritoryList[].createdBy#,
+            NOW(),
+            #newShopTerritoryList[].lastModifiedBy#,
+            #newShopTerritoryList[].approveID#,
+            #newShopTerritoryList[].approveBy#,
+            #newShopTerritoryList[].approveStatus#,
+            #newShopTerritoryList[].approveComment#,
+            #newShopTerritoryList[].externalID#
+            );
+        </iterate>
+    </insert>
 </sqlMap>

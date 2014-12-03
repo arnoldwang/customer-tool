@@ -23,12 +23,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 		"classpath*:/config/spring/local/appcontext-*.xml"})
 
 public class SyncSalesForceToApolloTaskTest {
-	@Mock
+
+	@Autowired
 	SyncSalesForceToApolloTask syncSalesForceToApolloTask;
 
 	@Before
-	public void initMock(){
-		MockitoAnnotations.initMocks(this);
+	public void setUp() throws Exception{
+
 	}
 
 	@After
