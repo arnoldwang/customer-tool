@@ -1,10 +1,10 @@
 package com.dianping.customer.tool.task;
 
-import com.dianping.customer.data.utils.Beans;
 import com.dianping.customer.tool.dao.ShopTerritoryDao;
 import com.dianping.customer.tool.dao.UserShopTerritoryDao;
 import com.dianping.customer.tool.entity.UserShopTerritory;
 import com.dianping.customer.tool.model.SalesForceInfo;
+import com.dianping.customer.tool.utils.Beans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +38,18 @@ public class SyncSalesForceToApolloTask {
 
 	private void syncSalesForceToApollo() {
 		int index = DEFAULT_PAGE_INDEX;
+		List<SalesForceInfo> salesForceInfoList = new ArrayList<SalesForceInfo>();
+		SalesForceInfo  sfInfo1 = new SalesForceInfo();
+		sfInfo1.setShopId("500018");
+		sfInfo1.setOwnerLoginId("-24351");
+		salesForceInfoList.add(sfInfo1);
+		SalesForceInfo  sfInfo2 = new SalesForceInfo();
+		sfInfo2.setShopId("500017");
+		sfInfo2.setOwnerLoginId("-24350");
+		salesForceInfoList.add(sfInfo2);
 		while (true) {
-			List<SalesForceInfo> salesForceInfoList = getSalesForceInfoList(DEFAULT_SIZE, index);
+//			List<SalesForceInfo> salesForceInfoList = getSalesForceInfoList(DEFAULT_SIZE, index);
+
 			if (salesForceInfoList.size() == 0)
 				break;
 			Map<String, String> shopUserMap = new HashMap<String, String>();

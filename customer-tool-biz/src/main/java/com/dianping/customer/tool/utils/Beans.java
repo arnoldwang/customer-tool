@@ -19,13 +19,23 @@ public class Beans implements ApplicationContextAware {
 		applicationContext = ctx;
 	}
 
-	public static <T> T getBean(Class<T> type){
+	public static Object getBean(String className) {
+		return applicationContext.getBean(className);
+	}
+
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public static <T> T getBean(Class<T> type) {
+
 		T bean = null;
 
 		Map<String, T> map = applicationContext.getBeansOfType(type);
-		if(map.size() == 1)
+		if (map.size() == 1) {
+			// only return the bean if there is exactly one
 			bean = map.values().iterator().next();
-
+		}
 		return bean;
 	}
 }
