@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:avatar="http://www.dianping.com/schema/avatar"
        xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-        http://www.dianping.com/schema/avatar http://www.dianping.com/schema/avatar/avatar-1.0.xsd">
+    <!--     <context:component-scan base-package="com.dianping.taskcenter" /> -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg>
+            <bean class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+                <property name="connectTimeout" value="${customerinfo-web.restTemplate.connectTimeOut}"/>
+                <property name="readTimeout" value="${customerinfo-web.restTemplate.readTimeOut}"/>
+            </bean>
+        </constructor-arg>
+    </bean>
 
-<!--     <context:component-scan base-package="com.dianping.taskcenter" /> -->
+    <bean id="salesForceOauthTokenUtil" class="com.dianping.customer.tool.utils.SalesForceOauthTokenUtil">
+        <property name="tokenURL" value="${customerinfo-web.salesforce.token.url}"/>
+        <property name="clientId" value="${customerinfo-web.salesforce.token.clientid}"/>
+        <property name="clientSecret" value="${customerinfo-web.salesforce.token.clientsecret}"/>
+        <property name="grantType" value="${customerinfo-web.salesforce.token.granttype}"/>
+        <property name="username" value="${customerinfo-web.salesforce.token.username}"/>
+        <property name="password" value="${customerinfo-web.salesforce.token.password}"/>
+        <property name="restTemplate" ref="restTemplate"/>
+    </bean>
 
     <bean id="syncApolloDataTask" class="com.dianping.customer.tool.task.SyncApolloDataTask"/>
 
@@ -28,25 +41,25 @@
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
             <list>
-                <ref bean="syncApolloDataTaskJob" />
+                <ref bean="syncApolloDataTaskJob"/>
             </list>
         </property>
         <property name="triggers">
             <list>
-                <ref bean="syncApolloDataExtCronTrigger" />
+                <ref bean="syncApolloDataExtCronTrigger"/>
             </list>
         </property>
     </bean>
 
-     <bean id="parentDao" class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true">
-         <property name="interceptorNames">
-             <list>
-                 <value>daoAutoRealizerAdvisor</value>
-             </list>
-         </property>
-     </bean>
+    <bean id="parentDao" class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true">
+        <property name="interceptorNames">
+            <list>
+                <value>daoAutoRealizerAdvisor</value>
+            </list>
+        </property>
+    </bean>
 
-<!--     MySQL sql converter -->
-     <bean id="mysqlConverter" class="com.dianping.avatar.dao.ibatis.MySqlConverter"/>
+    <!--     MySQL sql converter -->
+    <bean id="mysqlConverter" class="com.dianping.avatar.dao.ibatis.MySqlConverter"/>
 
 </beans>

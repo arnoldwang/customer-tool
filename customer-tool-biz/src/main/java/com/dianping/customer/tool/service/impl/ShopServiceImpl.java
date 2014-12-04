@@ -10,7 +10,7 @@ import com.dianping.customer.tool.exception.BizException;
 import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.model.ShopInfoModel;
 import com.dianping.customer.tool.service.ShopService;
-import com.dianping.customer.tool.utils.SalesforceOauthTokenUtil;
+import com.dianping.customer.tool.utils.SalesForceOauthTokenUtil;
 import com.dianping.salesbu.api.UserGroupService;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  */
 public class ShopServiceImpl implements ShopService {
 	@Autowired
-	private SalesforceOauthTokenUtil salesforceOauthTokenUtil;
+	private SalesForceOauthTokenUtil salesForceOauthTokenUtil;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -50,7 +50,7 @@ public class ShopServiceImpl implements ShopService {
 
 	public ServiceResult getSalesForceInfo(String shopId) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + salesforceOauthTokenUtil.getLoginToken());
+		headers.set("Authorization", "Bearer " + salesForceOauthTokenUtil.getLoginToken());
 		Map<String, String> uriVariables = Maps.newHashMap();
 		uriVariables.put("shopId", shopId);
 		String url = getRESTUrl(smtShopInfoURL);
@@ -61,7 +61,7 @@ public class ShopServiceImpl implements ShopService {
 
 	@Override
 	public ShopInfoModel getShopInfo(String shopId) {
-		if (!isNumeric(shopId))
+		if (!isNumber(shopId))
 			throw new BizException("您输入的ShopId不合法，请输入正确Id!");
 
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
@@ -158,7 +158,7 @@ public class ShopServiceImpl implements ShopService {
 		this.smtShopInfoURL = smtShopInfoURL;
 	}
 
-	private boolean isNumeric(String str) {
+	private boolean isNumber(String str) {
 		Pattern pattern = Pattern.compile("[0-9]+");
 		Matcher isNum = pattern.matcher(str);
 		if (!isNum.matches()) {

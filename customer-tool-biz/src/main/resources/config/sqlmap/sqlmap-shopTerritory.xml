@@ -163,7 +163,7 @@
             #newShopTerritoryList[].approveStatus#,
             #newShopTerritoryList[].approveComment#,
             #newShopTerritoryList[].externalID#
-            );
+            )
         </iterate>
     </insert>
 </sqlMap>
