@@ -7,6 +7,8 @@ import com.dianping.customer.tool.entity.ShopTerritory;
 import com.dianping.customer.tool.entity.UserShopTerritory;
 import com.dianping.customer.tool.model.SalesForceInfo;
 import com.dianping.customer.tool.utils.Beans;
+import com.dianping.customer.tool.utils.ConfigUtils;
+import com.dianping.customer.tool.utils.SalesforceOauthTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,30 +18,40 @@ import java.util.*;
  * User: zhenwei.wang
  * Date: 14-12-2
  */
-public class SyncSalesForceToApolloTask {
+public class SyncApolloDataTask {
 	private static final int DEFAULT_SIZE = 1000;
 
 	private static final int DEFAULT_PAGE_INDEX = 1;
 
-	Logger logger = LoggerFactory.getLogger(SyncSalesForceToApolloTask.class);
+	private SalesforceOauthTokenUtil salesforceOauthTokenUtil = Beans.getBean(SalesforceOauthTokenUtil.class);
+
+	private UserShopTerritoryDao userShopTerritoryDao = Beans.getBean(UserShopTerritoryDao.class);
+
+	private ShopTerritoryDao shopTerritoryDao = Beans.getBean(ShopTerritoryDao.class);
+
+	private  String token = this.token != null ? this.token : salesforceOauthTokenUtil.getLoginToken();
+
+	Logger logger = LoggerFactory.getLogger(SyncApolloDataTask.class);
 
 
 	public void go() {
-		logger.info("SyncSalesForceToApolloTask.running...");
-		System.out.println("SyncSalesForceToApolloTask.running...");
+		if (!ConfigUtils.getSyncApolloDataTaskTrigger()){
+			logger.info("SyncApolloDataTask will not run!");
+			System.out.println("SyncApolloDataTask will not run!");
+			return;
+		}
+
+		logger.info("SyncApolloDataTask.running...");
+		System.out.println("SyncApolloDataTask.running...");
 
 		syncSalesForceToApollo();
 
-		logger.info("SyncSalesForceToApolloTask.end");
-		System.out.println("SyncSalesForceToApolloTask.end");
+		logger.info("SyncApolloDataTask.end");
+		System.out.println("SyncApolloDataTask.end");
 	}
 
 
 	private void syncSalesForceToApollo() {
-
-		UserShopTerritoryDao userShopTerritoryDao = Beans.getBean(UserShopTerritoryDao.class);
-
-		ShopTerritoryDao shopTerritoryDao = Beans.getBean(ShopTerritoryDao.class);
 
 		int index = DEFAULT_PAGE_INDEX;
 

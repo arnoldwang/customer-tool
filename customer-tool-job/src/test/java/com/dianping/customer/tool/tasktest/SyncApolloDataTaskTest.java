@@ -1,13 +1,10 @@
 package com.dianping.customer.tool.tasktest;
 
-import com.dianping.customer.tool.task.SyncSalesForceToApolloTask;
+import com.dianping.customer.tool.task.SyncApolloDataTask;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,10 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 		"classpath*:/config/spring/common/appcontext-*.xml",
 		"classpath*:/config/spring/local/appcontext-*.xml"})
 
-public class SyncSalesForceToApolloTaskTest {
+public class SyncApolloDataTaskTest {
 
 	@Autowired
-	SyncSalesForceToApolloTask syncSalesForceToApolloTask;
+	SyncApolloDataTask syncApolloDataTask;
 
 	@Before
 	public void setUp() throws Exception{
@@ -39,7 +36,7 @@ public class SyncSalesForceToApolloTaskTest {
 
 	@Test
 	public void goTest(){
-		syncSalesForceToApolloTask.go();
+		syncApolloDataTask.go();
 	}
 
 }

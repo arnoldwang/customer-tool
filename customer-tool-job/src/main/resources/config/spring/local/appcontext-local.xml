@@ -10,36 +10,30 @@
 
 <!--     <context:component-scan base-package="com.dianping.taskcenter" /> -->
 
-<!--     <bean id="syncDealAmount" class="com.dianping.taskcenter.task.SyncDealAmount"> -->
-<!--     </bean> -->
-
-<!--     <bean id="syncSalesOrgnization" class="com.dianping.taskcenter.task.SyncSalesOrgnization"> -->
-<!--     </bean> -->
-
-    <bean id="syncSalesForceToApolloTask" class="com.dianping.customer.tool.task.SyncSalesForceToApolloTask"/>
+    <bean id="syncApolloDataTask" class="com.dianping.customer.tool.task.SyncApolloDataTask"/>
 
     <!--同步SalesForce与Apollo中UserShopTerritory数据的定时器-->
-    <bean id="syncSalesForceToApolloTaskJob"
+    <bean id="syncApolloDataTaskJob"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="syncSalesForceToApolloTask"/>
+        <property name="targetObject" ref="syncApolloDataTask"/>
         <property name="targetMethod" value="go"/>
         <property name="concurrent" value="false"/>
     </bean>
 
-    <bean id="syncSalesForceToApolloExtCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="syncSalesForceToApolloTaskJob"/>
-        <property name="cronExpression" value="${customer-pc-job.sync.sales.bu.quartz.expression}"/>
+    <bean id="syncApolloDataExtCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="syncApolloDataTaskJob"/>
+        <property name="cronExpression" value="${customer-tool-job.sync.apollo.data.quartz.expression}"/>
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
             <list>
-                <ref bean="syncSalesForceToApolloTaskJob" />
+                <ref bean="syncApolloDataTaskJob" />
             </list>
         </property>
         <property name="triggers">
             <list>
-                <ref bean="syncSalesForceToApolloExtCronTrigger" />
+                <ref bean="syncApolloDataExtCronTrigger" />
             </list>
         </property>
     </bean>
