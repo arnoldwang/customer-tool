@@ -19,6 +19,8 @@ public class ShopTerritoryHistory implements Serializable {
 
 	private int territoryId;
 
+	private String externalId;
+
 	public long getId() {
 		return id;
 	}
@@ -57,5 +59,13 @@ public class ShopTerritoryHistory implements Serializable {
 
 	public void setTerritoryId(int territoryId) {
 		this.territoryId = territoryId;
+	}
+
+	public String getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(String externalId) {
+		this.externalId = externalId;
 	}
 }

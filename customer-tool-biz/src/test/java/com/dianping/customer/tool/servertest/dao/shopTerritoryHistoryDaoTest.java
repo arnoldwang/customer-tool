@@ -19,7 +19,7 @@ import static com.beust.jcommander.internal.Lists.newArrayList;
  * User: zhenwei.wang
  * Date: 14-12-5
  */
-public class shopTerritoryHistoryDaoTest extends AbstractTest{
+public class ShopTerritoryHistoryDaoTest extends AbstractTest{
 	@Autowired
 	private ShopTerritoryHistoryDao shopTerritoryDao;
 

@@ -27,6 +27,7 @@
     <resultMap id="shopTerritoryList" class="ShopTerritory">
         <result property="newShopID" column="NewShopID"/>
         <result property="territoryID" column="TerritoryID"/>
+        <result property="externalID" column="ExternalId" />
     </resultMap>
 
 
@@ -106,7 +107,8 @@
     <select id="queryShopTerritoryByNewShopIDList" resultMap="shopTerritoryList" parameterClass="map">
         SELECT
         st.NewShopID,
-        st.TerritoryID
+        st.TerritoryID,
+        st.ExternalId
         FROM MR_ShopTerritory st
         WHERE st.NewShopID IN
         <iterate property="newShopIDList" open="(" close=")" conjunction=",">

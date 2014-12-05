@@ -9,6 +9,7 @@
         <result property="createTime" column="CreateTime" />
         <result property="shopId" column="ShopID" />
         <result property="territoryId" column="TerritoryID" />
+        <result property="externalId" column="ExternalID" />
     </resultMap>
 
     <insert id="addToShopTerritoryHistory" parameterClass="map">
@@ -17,7 +18,8 @@
             TypeID,
             CreateTime,
             ShopID,
-            TerritoryID
+            TerritoryID,
+            ExternalID
             )
         VALUES
         <iterate property="shopTerritoryHistoryList" conjunction=",">
@@ -25,7 +27,8 @@
             #shopTerritoryHistoryList[].typeId#,
             NOW(),
             #shopTerritoryHistoryList[].shopId#,
-            #shopTerritoryHistoryList[].territoryId#
+            #shopTerritoryHistoryList[].territoryId#,
+            #shopTerritoryHistoryList[].externalId#
             )
         </iterate>
     </insert>
@@ -36,7 +39,8 @@
             TypeID,
             CreateTime,
             ShopID,
-            TerritoryID
+            TerritoryID,
+            ExternalID
         FROM PC_ShopTerritoryHistory
         WHERE CreateTime > #createTime#
         LIMIT 10000;
