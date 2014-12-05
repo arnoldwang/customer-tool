@@ -25,9 +25,9 @@
 %>
 <head>
     <meta charset="utf8">
-    <link rel="Shortcut Icon" href="http://j1.s2.dpfile.com/s/res/favicon.5ff777c11d7833e57e01c9d192b7e427.ico" type="image/x-icon">
+    <link rel="Shortcut Icon" href="http://j1.s2.dpfile.com/s/res/favicon.5ff777c11d7833e57e01c9d192b7e427.ico" typeId="image/x-icon">
     <%for(String css:cssArray){%>
-    <link href="<%=prefix+css%>" media="all" rel="stylesheet" type="text/css" />
+    <link href="<%=prefix+css%>" media="all" rel="stylesheet" typeId="text/css" />
     <%}%>
 
 </head>

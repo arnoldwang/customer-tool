@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:avatar="http://www.dianping.com/schema/avatar"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+
+       http://www.dianping.com/schema/avatar http://www.dianping.com/schema/avatar/avatar-1.0.xsd">
+
+    <bean id="placeholder" class="com.dianping.lion.client.SpringConfig">
+        <property name="propertiesPath" value="config/applicationContext.properties"/>
+    </bean>
+
+</beans>

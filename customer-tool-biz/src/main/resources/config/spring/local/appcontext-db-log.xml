@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!-- Master Main datasource -->
+    <bean id="log-master" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="jdbcUrl" value="${customer-report-web.jdbc.url}"/>
+        <property name="user" value="${customer-report-web.jdbc.username}"/>
+        <property name="password" value="${customer-report-web.jdbc.password}"/>
+        <property name="driverClass" value="${customer-report-web.jdbc.driverClassName}"/>
+        <property name="minPoolSize" value="8"/>
+        <property name="maxPoolSize" value="30"/>
+        <property name="initialPoolSize" value="15"/>
+        <property name="maxIdleTime" value="1800"/>
+        <property name="idleConnectionTestPeriod" value="60"/>
+        <property name="acquireRetryAttempts" value="3"/>
+        <property name="acquireRetryDelay" value="300"/>
+        <property name="maxStatements" value="0"/>
+        <property name="maxStatementsPerConnection" value="100"/>
+        <property name="numHelperThreads" value="6"/>
+        <property name="maxAdministrativeTaskTime" value="5"/>
+        <property name="preferredTestQuery" value="SELECT 1"/>
+    </bean>
+
+    <!-- Slave Main datasource -->
+    <bean id="log-slave" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="jdbcUrl" value="${customer-report-web.jdbc.url}"/>
+        <property name="user" value="${customer-report-web.jdbc.username}"/>
+        <property name="password" value="${customer-report-web.jdbc.password}"/>
+        <property name="driverClass" value="${customer-report-web.jdbc.driverClassName}"/>
+        <property name="minPoolSize" value="8"/>
+        <property name="maxPoolSize" value="30"/>
+        <property name="initialPoolSize" value="15"/>
+        <property name="maxIdleTime" value="1800"/>
+        <property name="idleConnectionTestPeriod" value="60"/>
+        <property name="acquireRetryAttempts" value="3"/>
+        <property name="acquireRetryDelay" value="300"/>
+        <property name="maxStatements" value="0"/>
+        <property name="maxStatementsPerConnection" value="100"/>
+        <property name="numHelperThreads" value="6"/>
+        <property name="maxAdministrativeTaskTime" value="5"/>
+        <property name="preferredTestQuery" value="SELECT 1"/>
+    </bean>
+
+    <!-- Read/Write Splitting -->
+    <bean id="tool-log-dataSource" class="com.dianping.dpdl.sql.DPDataSource">
+        <property name="writeDS" value="log-master"/>
+        <property name="readDS">
+            <map>
+                <entry key="log-slave" value="10"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="tool-log-sqlMapClient" class="com.dianping.avatar.dao.ibatis.spring.LimitSqlMapClientFactoryBean">
+        <property name="dataSource" ref="tool-log-dataSource"/>
+        <property name="configLocation" value="classpath:config/sqlmap/sqlmapLog/sqlmap-config.xml"/>
+        <property name="sqlConvert" ref="mysqlConverter"/>
+    </bean>
+
+    <bean id="tool-log-sqlMapClient.daoRealize" class="com.dianping.avatar.dao.ibatis.IBatisGenericDaoImpl" abstract="true">
+        <property name="sqlMapClient" ref="tool-log-sqlMapClient"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="tool-log-dataSource"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

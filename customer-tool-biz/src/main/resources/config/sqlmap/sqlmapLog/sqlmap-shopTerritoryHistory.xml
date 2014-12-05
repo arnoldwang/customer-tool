@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ShopTerritoryHistory">
+    <typeAlias alias="shopTerritoryHistory" type="com.dianping.customer.tool.entity.ShopTerritoryHistory" />
+
+    <resultMap id="shopTerritoryHistoryLog" class="shopTerritoryHistory">
+        <result property="id" column="ID" />
+        <result property="typeId" column="TypeID" />
+        <result property="createTime" column="CreateTime" />
+        <result property="shopId" column="ShopID" />
+        <result property="territoryId" column="TerritoryID" />
+        <result property="externalId" column="ExternalID" />
+    </resultMap>
+
+    <insert id="addToShopTerritoryHistory" parameterClass="map">
+        INSERT INTO PC_ShopTerritoryHistory
+            (
+            TypeID,
+            CreateTime,
+            ShopID,
+            TerritoryID,
+            ExternalID
+            )
+        VALUES
+        <iterate property="shopTerritoryHistoryList" conjunction=",">
+            (
+            #shopTerritoryHistoryList[].typeId#,
+            NOW(),
+            #shopTerritoryHistoryList[].shopId#,
+            #shopTerritoryHistoryList[].territoryId#,
+            #shopTerritoryHistoryList[].externalId#
+            )
+        </iterate>
+    </insert>
+
+    <select id="queryShopTerritoryHistoryByCreateTime" resultMap="shopTerritoryHistoryLog" parameterClass="map">
+        SELECT
+            ID,
+            TypeID,
+            CreateTime,
+            ShopID,
+            TerritoryID,
+            ExternalID
+        FROM PC_ShopTerritoryHistory
+        WHERE CreateTime > #createTime#
+        LIMIT 10000;
+    </select>
+</sqlMap> 

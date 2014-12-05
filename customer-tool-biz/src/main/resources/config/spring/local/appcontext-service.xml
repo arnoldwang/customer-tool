@@ -15,7 +15,7 @@
         </constructor-arg>
     </bean>
 
-    <bean name="salesforceOauthTokenUtil" class="com.dianping.customer.tool.utils.SalesforceOauthTokenUtil">
+    <bean name="salesForceOauthTokenUtil" class="com.dianping.customer.tool.utils.SalesForceOauthTokenUtil">
         <property name="tokenURL" value="${customerinfo-web.salesforce.token.url}"/>
         <property name="clientId" value="${customerinfo-web.salesforce.token.clientid}"/>
         <property name="clientSecret" value="${customerinfo-web.salesforce.token.clientsecret}"/>

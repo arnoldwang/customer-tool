@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//log4j/log4j Configuration//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
-                     threshold="null" debug="null">
+                     threshold="null">
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <param name="Threshold" value="INFO" />
         <param name="Target" value="System.out" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[deal-search-biz]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-biz]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="avatarAppender" class="org.apache.log4j.DailyRollingFileAppender">
          <param name="Threshold" value="INFO" />
-        <param name="File" value="/data/applogs/deal-search-biz/logs/avatar.log" />
+        <param name="File" value="/data/applogs/customer-tool-biz/logs/avatar.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[deal-search-biz]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-biz]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="appAppender" class="org.apache.log4j.DailyRollingFileAppender">
          <param name="Threshold" value="INFO" />
-        <param name="File" value="/data/applogs/deal-search-biz/logs/app.log" />
+        <param name="File" value="/data/applogs/customer-tool-biz/logs/app.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[deal-search-biz]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-biz]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="ibatisAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/deal-search-biz/logs/ibatis.log" />
+        <param name="File" value="/data/applogs/customer-tool-biz/logs/ibatis.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[deal-search-biz]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-biz]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="illegalAccessAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/deal-search-biz/logs/illegalAccess.log" />
+        <param name="File" value="/data/applogs/customer-tool-biz/logs/illegalAccess.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[deal-search-biz]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-biz]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
     <appender name="illegalParameterAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/deal-search-biz/logs/illegalParameter.log" />
+        <param name="File" value="/data/applogs/customer-tool-biz/logs/illegalParameter.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[deal-search-biz]%d %-5p [%c %L] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-biz]%d %-5p [%c %L] %m%n" />
         </layout>
     </appender>
 
@@ -54,9 +54,9 @@
     </logger>
 
     <appender name="perfAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/deal-search-biz/logs/perf.log" />
+        <param name="File" value="/data/applogs/customer-tool-biz/logs/perf.log" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[deal-search-biz]%d %-5p [%c] %m%n" />
+            <param name="ConversionPattern" value="[customer-tool-biz]%d %-5p [%c] %m%n" />
         </layout>
     </appender>
 
@@ -66,19 +66,18 @@
     </logger>
 
     <logger name="com.ibatis" additivity="false">
-        <level value="WARN" />
+        <level value="DEBUG" />
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="ibatisAppender" />
     </logger>
 
     <logger name="java.sql">
-        <level value="WARN" />
+        <level value="DEBUG" />
     </logger>
 
     <root>
-        <level value="INFO" />
+        <level value="DEBUG" />
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="appAppender" />
     </root>
 
 </log4j:configuration>

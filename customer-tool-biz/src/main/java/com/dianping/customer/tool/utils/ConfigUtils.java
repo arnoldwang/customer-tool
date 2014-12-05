@@ -14,4 +14,8 @@ public class ConfigUtils {
     public static String getJsVersion() {
         return PropertiesLoaderSupportUtils.getProperty("customer-tool-web.js.version");
     }
+
+	public static Boolean getSyncApolloDataTaskTrigger() {
+		return PropertiesLoaderSupportUtils.getBoolProperty("customer-tool-job.syncApolloDataTaskTrigger", true);
+	}
 }
