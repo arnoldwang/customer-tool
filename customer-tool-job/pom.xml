@@ -126,14 +126,14 @@
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>2.2</version>
-            <type>jar</type>
+            <typeId>jar</typeId>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.thoughtworks.proxytoys</groupId>
             <artifactId>proxytoys</artifactId>
             <version>1.0</version>
-            <type>jar</type>
+            <typeId>jar</typeId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -190,7 +190,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
-            <type>jar</type>
+            <typeId>jar</typeId>
             <scope>compile</scope>
         </dependency>
 
@@ -257,7 +257,7 @@
             <groupId>com.dianping.dpsf</groupId>
             <artifactId>pigeon-engine</artifactId>
             <version>1.7.4.2</version>
-            <type>jar</type>
+            <typeId>jar</typeId>
             <scope>compile</scope>
         </dependency>
 

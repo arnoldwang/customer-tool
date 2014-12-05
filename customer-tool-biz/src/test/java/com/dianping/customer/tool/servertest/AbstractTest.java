@@ -8,7 +8,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import spock.lang.Specification;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@RunWith(UnitilsJUnit4TestClassRunner.class)
 @ContextConfiguration(locations = {
 		"classpath*:/config/spring/common/appcontext-*.xml",
 		"classpath*:/config/spring/local/appcontext-*.xml",

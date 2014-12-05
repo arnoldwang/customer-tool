@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="UserShopHistory">
+    <typeAlias alias="userShopHistory" type="com.dianping.customer.tool.entity.UserShopHistory" />
+
+    <resultMap id="userShopHistoryLog" class="userShopHistory">
+        <result property="id" column="ID" />
+        <result property="typeId" column="TypeID" />
+        <result property="createTime" column="CreateTime" />
+        <result property="shopId" column="ShopID" />
+        <result property="userId" column="UserID" />
+    </resultMap>
+
+    <insert id="addToUserShopHistory" parameterClass="map">
+        INSERT INTO PC_UserShopHistory
+        (
+        TypeID,
+        CreateTime,
+        ShopID,
+        UserID
+        )
+        VALUES
+        (
+        #userShopHistory.typeId#,
+        NOW(),
+        #userShopHistory.shopId#,
+        #userShopHistory.userId#
+        )
+    </insert>
+        
+</sqlMap>

@@ -65,18 +65,18 @@
     </logger>
 
     <logger name="com.ibatis" additivity="false">
-        <level value="DEBUG" />
+        <level value="INFO" />
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="ibatisAppender" />
     </logger>
 
     <logger name="java.sql"  additivity="false">
-        <level value="DEBUG" />
+        <level value="INFO" />
         <appender-ref ref="CONSOLE" />
     </logger>
 
     <root>
-        <level value="DEBUG" />
+        <level value="INFO" />
         <appender-ref ref="CONSOLE" />
 
     </root>

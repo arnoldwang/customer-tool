@@ -53,17 +53,16 @@
     </logger>
 
     <logger name="com.ibatis" additivity="false">
-        <level value="WARN" />
-        <appender-ref ref="CONSOLE" />
+        <level value="INFO" />
         <appender-ref ref="ibatisAppender" />
     </logger>
 
     <logger name="java.sql">
-        <level value="WARN" />
+        <level value="INFO" />
     </logger>
 
     <root>
-        <level value="ERROR" />
+        <level value="INFO" />
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="appAppender" />
     </root>
