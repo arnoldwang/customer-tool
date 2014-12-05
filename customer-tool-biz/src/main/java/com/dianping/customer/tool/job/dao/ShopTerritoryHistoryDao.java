@@ -4,7 +4,7 @@ import com.dianping.avatar.dao.GenericDao;
 import com.dianping.avatar.dao.annotation.DAOAction;
 import com.dianping.avatar.dao.annotation.DAOActionType;
 import com.dianping.avatar.dao.annotation.DAOParam;
-import com.dianping.customer.tool.entity.UserShopHistory;
+import com.dianping.customer.tool.entity.ShopTerritoryHistory;
 
 import java.util.Date;
 import java.util.List;
@@ -13,11 +13,11 @@ import java.util.List;
  * User: zhenwei.wang
  * Date: 14-12-5
  */
-public interface UserShopHistoryDao extends GenericDao {
+public interface ShopTerritoryHistoryDao extends GenericDao {
 
 	@DAOAction(action = DAOActionType.INSERT)
-	void addToUserShopHistory(@DAOParam("userShopHistoryList")List<UserShopHistory> userShopHistoryList);
+	void addToShopTerritoryHistory(@DAOParam("shopTerritoryHistoryList")List<ShopTerritoryHistory> shopTerritoryHistoryList);
 
 	@DAOAction(action = DAOActionType.QUERY)
-	List<UserShopHistory> queryUserShopHistoryByCreateTime(@DAOParam("createTime") Date createTime);
+	List<ShopTerritoryHistory> queryShopTerritoryHistoryByCreateTime(@DAOParam("createTime")Date createTime);
 }

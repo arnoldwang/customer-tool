@@ -13,19 +13,34 @@
 
     <insert id="addToUserShopHistory" parameterClass="map">
         INSERT INTO PC_UserShopHistory
-        (
-        TypeID,
-        CreateTime,
-        ShopID,
-        UserID
-        )
+            (
+            TypeID,
+            CreateTime,
+            ShopID,
+            UserID
+            )
         VALUES
-        (
-        #userShopHistory.typeId#,
-        NOW(),
-        #userShopHistory.shopId#,
-        #userShopHistory.userId#
-        )
+        <iterate property="userShopHistoryList" conjunction=",">
+            (
+            #userShopHistoryList[].typeId#,
+            NOW(),
+            #userShopHistoryList[].shopId#,
+            #userShopHistoryList[].userId#
+            )
+        </iterate>
+
     </insert>
+
+    <select id="queryUserShopHistoryByCreateTime" resultMap="userShopHistoryLog" parameterClass="map">
+        SELECT
+            ID,
+            TypeID,
+            CreateTime,
+            ShopID,
+            UserID
+        FROM PC_UserShopHistory
+        WHERE CreateTime > #createTime#
+        LIMIT 10000;
+    </select>
         
 </sqlMap>

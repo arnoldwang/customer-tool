@@ -1,7 +1,7 @@
 package com.dianping.customer.tool.servertest.dao;
 
-import com.dianping.customer.tool.entity.UserShopHistory;
-import com.dianping.customer.tool.job.dao.UserShopHistoryDao;
+import com.dianping.customer.tool.entity.ShopTerritoryHistory;
+import com.dianping.customer.tool.job.dao.ShopTerritoryHistoryDao;
 import com.dianping.customer.tool.servertest.AbstractTest;
 import org.junit.After;
 import org.junit.Before;
@@ -17,24 +17,21 @@ import static com.beust.jcommander.internal.Lists.newArrayList;
 
 /**
  * User: zhenwei.wang
- * Date: 14-11-26
- * Time: 下午4:26
+ * Date: 14-12-5
  */
-
-public class UserShopHistoryDaoTest extends AbstractTest{
+public class shopTerritoryHistoryDaoTest extends AbstractTest{
 	@Autowired
-	private UserShopHistoryDao userShopHistoryDao;
+	private ShopTerritoryHistoryDao shopTerritoryDao;
 
-
-	private UserShopHistory userShopHistory  = new UserShopHistory();
-	private List<UserShopHistory> usList = newArrayList();
+	private ShopTerritoryHistory st = new ShopTerritoryHistory();
+	private List<ShopTerritoryHistory> stList = newArrayList();
 
 	@Before
 	public void setUp() throws Exception{
-		userShopHistory.setShopId(1);
-		userShopHistory.setUserId(1);
-		userShopHistory.setTypeId(0);
-		usList.add(userShopHistory);
+		st.setShopId(1);
+		st.setTerritoryId(1);
+		st.setTypeId(0);
+		stList.add(st);
 	}
 
 	@After
@@ -44,18 +41,19 @@ public class UserShopHistoryDaoTest extends AbstractTest{
 
 	@Test
 	public void goTest(){
-		userShopHistoryDao.addToUserShopHistory(usList);
+		shopTerritoryDao.addToShopTerritoryHistory(stList);
+		System.out.println("ok");
 
 		String ds = "2014-12-05";
 		DateFormat df = DateFormat.getDateInstance();
 		Date d = new Date();
 		try {
-			 d = df.parse(ds);
+			d = df.parse(ds);
 		}
 		catch(ParseException e) {
 			System.out.println("Unable to parse " + ds);
 		}
-		int size = userShopHistoryDao.queryUserShopHistoryByCreateTime(d).size();
+		int size = shopTerritoryDao.queryShopTerritoryHistoryByCreateTime(d).size();
 
 		System.out.println(size);
 	}
