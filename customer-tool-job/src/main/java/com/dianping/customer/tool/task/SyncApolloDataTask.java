@@ -45,7 +45,7 @@ public class SyncApolloDataTask {
 
 	private ShopTerritoryHistoryDao shopTerritoryHistoryDao = Beans.getBean(ShopTerritoryHistoryDao.class);
 
-	private String token = this.token != null ? this.token : salesForceOauthTokenUtil.getLoginToken();
+	private String token;
 
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataTask.class);
 
@@ -153,6 +153,8 @@ public class SyncApolloDataTask {
 	public List<HashMap<String, Object>> getSalesForceInfoList(int pageSize, int pageNum) {
 
 		HttpHeaders headers = new HttpHeaders();
+		if(token == null)
+			token = salesForceOauthTokenUtil.getLoginToken();
 		headers.set("Authorization", "Bearer " + token);
 		Map<String, String> uriVariables = Maps.newHashMap();
 		uriVariables.put("pageSize", String.valueOf(pageSize));
