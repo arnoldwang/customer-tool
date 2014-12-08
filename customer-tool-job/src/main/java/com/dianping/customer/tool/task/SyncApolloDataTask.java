@@ -31,7 +31,7 @@ import java.util.*;
 public class SyncApolloDataTask {
 	private static final int DEFAULT_SIZE = 1000;
 
-	private static final int DEFAULT_PAGE_INDEX = 23;
+	private static final int DEFAULT_PAGE_INDEX = 1;
 
 	private SalesForceOauthTokenUtil salesForceOauthTokenUtil = Beans.getBean(SalesForceOauthTokenUtil.class);
 
