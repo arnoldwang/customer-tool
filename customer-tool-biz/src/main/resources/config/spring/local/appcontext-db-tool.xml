@@ -58,7 +58,7 @@
 
     <bean id="customer-tool-sqlMapClient" class="com.dianping.avatar.dao.ibatis.spring.LimitSqlMapClientFactoryBean">
         <property name="dataSource" ref="customerinfo.dataSource"/>
-        <property name="configLocation" value="classpath:config/sqlmap/sqlmap/sqlmap-config.xml"/>
+        <property name="configLocation" value="classpath:config/sqlmap/sqlmapTool/sqlmap-config.xml"/>
         <property name="sqlConvert" ref="mysqlConverter"/>
     </bean>
 
