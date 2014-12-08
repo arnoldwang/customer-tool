@@ -47,6 +47,12 @@ public class SyncApolloDataTask {
 
 	private String token;
 
+	private String smtShopInfoListUrl;
+
+	public void setSmtShopInfoListUrl(String smtShopInfoListUrl) {
+		this.smtShopInfoListUrl = smtShopInfoListUrl;
+	}
+
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataTask.class);
 
 
@@ -159,7 +165,7 @@ public class SyncApolloDataTask {
 		Map<String, String> uriVariables = Maps.newHashMap();
 		uriVariables.put("pageSize", String.valueOf(pageSize));
 		uriVariables.put("pageNum", String.valueOf(pageNum));
-		String url = "https://dper--dpstg.cs6.my.salesforce.com/services/apexrest/SMTTool/shops" + "?pageNum={pageNum}&pageSize={pageSize}";
+		String url = smtShopInfoListUrl + "?pageNum={pageNum}&pageSize={pageSize}";
 		ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
 		if (response.getStatusCode().value() == 401) {
 			token = salesForceOauthTokenUtil.getLoginToken();
@@ -174,8 +180,9 @@ public class SyncApolloDataTask {
 
 	public void addUserShopLog(List<UserShopTerritory> userShopList, int typeId) {
 		List<UserShopHistory> userShopHistoryList = Lists.newArrayList();
-		UserShopHistory userShopHistory = new UserShopHistory();
+
 		for (UserShopTerritory ust : userShopList) {
+			UserShopHistory userShopHistory = new UserShopHistory();
 			userShopHistory.setUserId(ust.getUserID());
 			userShopHistory.setShopId(ust.getNewShopID());
 			userShopHistory.setTypeId(typeId);
@@ -201,9 +208,10 @@ public class SyncApolloDataTask {
 	}
 
 	public void insertUserShopRightData(Map<String, String> shopUserMap) {
-		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
-		UserShopTerritory userShopTerritory = new UserShopTerritory();
+		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList(1000);
+
 		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
+			UserShopTerritory userShopTerritory = new UserShopTerritory();
 			userShopTerritory.setUserID(Integer.valueOf(entry.getValue()));
 			userShopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
 			userShopTerritory.setStatus(1);
@@ -227,8 +235,9 @@ public class SyncApolloDataTask {
 
 	public void addShopTerritoryLog(List<ShopTerritory> shopTerritoryList, int typeId) {
 		List<ShopTerritoryHistory> shopTerritoryHistoryList = Lists.newArrayList();
-		ShopTerritoryHistory shopTerritoryHistory = new ShopTerritoryHistory();
+
 		for (ShopTerritory st : shopTerritoryList) {
+			ShopTerritoryHistory shopTerritoryHistory = new ShopTerritoryHistory();
 			shopTerritoryHistory.setShopId(st.getNewShopID());
 			shopTerritoryHistory.setTerritoryId(st.getTerritoryID());
 			shopTerritoryHistory.setTypeId(typeId);
@@ -256,9 +265,10 @@ public class SyncApolloDataTask {
 
 	public void insertShopTerritoryRightData(Map<String, Set<String>> shopTerritoryMap, Map<String, String> shopExternalMap) {
 		List<ShopTerritory> newShopTerritoryList = Lists.newArrayList();
-		ShopTerritory shopTerritory = new ShopTerritory();
+
 		for (Map.Entry<String, Set<String>> entry : shopTerritoryMap.entrySet()) {
 			for (String territoryID : entry.getValue()) {
+				ShopTerritory shopTerritory = new ShopTerritory();
 				shopTerritory.setExternalID(shopExternalMap.get(entry.getKey()) + "-" + territoryID);
 				shopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
 				shopTerritory.setTerritoryID(Integer.valueOf(territoryID));

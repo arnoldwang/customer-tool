@@ -23,7 +23,9 @@
         <property name="restTemplate" ref="restTemplate"/>
     </bean>
 
-    <bean id="syncApolloDataTask" class="com.dianping.customer.tool.task.SyncApolloDataTask"/>
+    <bean id="syncApolloDataTask" class="com.dianping.customer.tool.task.SyncApolloDataTask" >
+        <property name="smtShopInfoListUrl" value="${customer-tool-job.salesforce.shopinfo.url}" />
+    </bean>
 
     <!--同步SalesForce与Apollo中UserShopTerritory数据的定时器-->
     <bean id="syncApolloDataTaskJob"
