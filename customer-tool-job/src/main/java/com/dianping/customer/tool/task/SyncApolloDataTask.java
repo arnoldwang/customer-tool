@@ -29,9 +29,9 @@ import java.util.*;
  * Date: 14-12-2
  */
 public class SyncApolloDataTask {
-	private static final int DEFAULT_SIZE = 1000;
+	private static final int DEFAULT_SIZE = 10000;
 
-	private static final int DEFAULT_PAGE_INDEX = 1;
+	private static final int DEFAULT_INDEX = 1;
 
 	private SalesForceOauthTokenUtil salesForceOauthTokenUtil = Beans.getBean(SalesForceOauthTokenUtil.class);
 
@@ -49,6 +49,7 @@ public class SyncApolloDataTask {
 
 	private String smtShopInfoListUrl;
 
+
 	public void setSmtShopInfoListUrl(String smtShopInfoListUrl) {
 		this.smtShopInfoListUrl = smtShopInfoListUrl;
 	}
@@ -65,28 +66,35 @@ public class SyncApolloDataTask {
 
 		logger.info("SyncApolloDataTask.running...");
 		System.out.println("SyncApolloDataTask.running...");
-		long startTime = System.currentTimeMillis();
+		long beginTime = System.currentTimeMillis();
 
 		syncSalesForceToApollo();
 
 		long endTime = System.currentTimeMillis();
 		logger.info("SyncApolloDataTask.end");
 		System.out.println("SyncApolloDataTask.end");
-		long useTime = (endTime - startTime)/1000;
-		logger.info("This task use " + useTime/3600 + " H " + useTime %3600/60 + " m " + useTime %(3600*60));
+		long useTime = (endTime - beginTime) / 1000;
+		logger.info("This task use " + useTime / 3600 + " H " + useTime % 3600 / 60 + " m " + useTime % (3600 * 60));
 	}
 
 
 	private void syncSalesForceToApollo() {
 
-		int index = DEFAULT_PAGE_INDEX;
+		int begin = DEFAULT_INDEX;
+		int end = begin + DEFAULT_SIZE;
+		int flag = 0;
 
-		while (true) {
+		while (flag < 100) {
 			try {
-				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(DEFAULT_SIZE, index);
 
-				if (salesForceInfoList.size() == 0)
-					break;
+				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(begin, end);
+				begin = end;
+				end = begin + DEFAULT_SIZE;
+
+				if (salesForceInfoList == null || salesForceInfoList.size() == 0){
+					flag++;
+					continue;
+				}
 				Map<String, String> shopUserMap = new HashMap<String, String>();
 				Map<String, Set<String>> shopTerritoryMap = new HashMap<String, Set<String>>();
 				Map<String, String> shopExternalMap = new HashMap<String, String>();
@@ -99,7 +107,7 @@ public class SyncApolloDataTask {
 					}
 				} catch (Exception e) {
 					logger.info("SalesForce data incomplete");
-					index++;
+					flag++;
 					continue;
 				}
 
@@ -143,29 +151,27 @@ public class SyncApolloDataTask {
 
 				insertShopTerritoryRightData(shopTerritoryMap, shopExternalMap);
 
-//			try {
-//				sleep(5000);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//			}
-				index++;
+				flag = 0;
 			} catch (Exception e) {
-				index++;
-				logger.info("time out", e);
+				flag++;
+				logger.info("something error", e);
 			}
+			logger.info("this task run about " + end + " data!");
 		}
+		logger.info("this task run about " + end + " data!");
 	}
 
-	public List<HashMap<String, Object>> getSalesForceInfoList(int pageSize, int pageNum) {
+
+	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end) {
 
 		HttpHeaders headers = new HttpHeaders();
-		if(token == null)
+		if (token == null)
 			token = salesForceOauthTokenUtil.getLoginToken();
 		headers.set("Authorization", "Bearer " + token);
 		Map<String, String> uriVariables = Maps.newHashMap();
-		uriVariables.put("pageSize", String.valueOf(pageSize));
-		uriVariables.put("pageNum", String.valueOf(pageNum));
-		String url = smtShopInfoListUrl + "?pageNum={pageNum}&pageSize={pageSize}";
+		uriVariables.put("begin", String.valueOf(begin));
+		uriVariables.put("end", String.valueOf(end));
+		String url = smtShopInfoListUrl + "?begin={begin}&end={end}";
 		ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
 		if (response.getStatusCode().value() == 401) {
 			token = salesForceOauthTokenUtil.getLoginToken();
@@ -208,7 +214,7 @@ public class SyncApolloDataTask {
 	}
 
 	public void insertUserShopRightData(Map<String, String> shopUserMap) {
-		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList(1000);
+		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
 		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
 			UserShopTerritory userShopTerritory = new UserShopTerritory();
