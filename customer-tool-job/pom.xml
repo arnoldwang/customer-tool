@@ -12,6 +12,11 @@
     <version>${project.version.job}</version>
     <name>customer-tool-job</name>
     <packaging>war</packaging>
+
+    <properties>
+        <env>alpha</env>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
