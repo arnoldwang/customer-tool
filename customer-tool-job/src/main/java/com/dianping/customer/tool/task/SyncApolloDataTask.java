@@ -74,7 +74,7 @@ public class SyncApolloDataTask {
 		logger.info("SyncApolloDataTask.end");
 		System.out.println("SyncApolloDataTask.end");
 		long useTime = (endTime - beginTime) / 1000;
-		logger.info("This task use " + useTime / 3600 + " H " + useTime % 3600 / 60 + " m " + useTime % (3600 * 60));
+		logger.info("This task use " + useTime / 3600 + " H " + useTime % 3600 / 60 + " m " + useTime % (3600 * 60) + " s!");
 	}
 
 
@@ -84,10 +84,10 @@ public class SyncApolloDataTask {
 		int end = begin + DEFAULT_SIZE;
 		int flag = 0;
 
-		while (flag == 0) {//flag < 100
+		while (flag < 100) {
 			try {
 
-				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(2062015, 2062016);
+				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(begin, end);
 				begin = end;
 				end = begin + DEFAULT_SIZE;
 
@@ -151,7 +151,7 @@ public class SyncApolloDataTask {
 
 				insertShopTerritoryRightData(shopTerritoryMap, shopExternalMap);
 
-				flag++;//flag = 0;
+				flag = 0;
 			} catch (Exception e) {
 				flag++;
 				logger.warn("something error", e);
