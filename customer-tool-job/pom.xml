@@ -77,8 +77,8 @@
         <dependency>
             <groupId>com.dianping</groupId>
             <artifactId>customer-tool-biz</artifactId>
-        <version>${project.version.biz}</version>
-    </dependency>
+            <version>${project.version.biz}</version>
+        </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
