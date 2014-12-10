@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>customer-tool-job</artifactId>
-    <version>${project.version.job}</version>
+    <version>1.0.4-SNAPSHOT</version>
     <name>customer-tool-job</name>
     <packaging>war</packaging>
 
