@@ -84,14 +84,14 @@ public class SyncApolloDataTask {
 		int end = begin + DEFAULT_SIZE;
 		int flag = 0;
 
-		while (flag < 100) {
+		while (flag == 0) {//flag < 100
 			try {
 
-				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(begin, end);
+				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(2062015, 2062016);
 				begin = end;
 				end = begin + DEFAULT_SIZE;
 
-				if (salesForceInfoList == null || salesForceInfoList.size() == 0){
+				if (salesForceInfoList == null || salesForceInfoList.size() == 0) {
 					flag++;
 					continue;
 				}
@@ -151,10 +151,10 @@ public class SyncApolloDataTask {
 
 				insertShopTerritoryRightData(shopTerritoryMap, shopExternalMap);
 
-				flag = 0;
+				flag++;//flag = 0;
 			} catch (Exception e) {
 				flag++;
-				logger.info("something error", e);
+				logger.warn("something error", e);
 			}
 			logger.info("this task run about " + end + " data!");
 		}
@@ -163,24 +163,27 @@ public class SyncApolloDataTask {
 
 
 	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end) {
+		List<HashMap<String, Object>> salesForceInfoList = Lists.newArrayList();
 
-		HttpHeaders headers = new HttpHeaders();
-		if (token == null)
-			token = salesForceOauthTokenUtil.getLoginToken();
-		headers.set("Authorization", "Bearer " + token);
-		Map<String, String> uriVariables = Maps.newHashMap();
-		uriVariables.put("begin", String.valueOf(begin));
-		uriVariables.put("end", String.valueOf(end));
-		String url = smtShopInfoListUrl + "?begin={begin}&end={end}";
-		ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-		if (response.getStatusCode().value() == 401) {
-			token = salesForceOauthTokenUtil.getLoginToken();
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			if (token == null)
+				token = salesForceOauthTokenUtil.getLoginToken();
 			headers.set("Authorization", "Bearer " + token);
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			Map<String, String> uriVariables = Maps.newHashMap();
+			uriVariables.put("begin", String.valueOf(begin));
+			uriVariables.put("end", String.valueOf(end));
+			String url = smtShopInfoListUrl + "?begin={begin}&end={end}";
+			ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			if (response.getStatusCode().value() == 401) {
+				token = salesForceOauthTokenUtil.getLoginToken();
+				headers.set("Authorization", "Bearer " + token);
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			}
+			salesForceInfoList = ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
+		} catch (Exception e) {
+			logger.warn("get SalesForce data failed!", e);
 		}
-
-		List<HashMap<String, Object>> salesForceInfoList = ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
-
 		return salesForceInfoList;
 	}
 
@@ -204,7 +207,7 @@ public class SyncApolloDataTask {
 				userShopTerritoryDao.deleteUserShopTerritoryByUserShopList(userShopList);
 				for (UserShopTerritory userShopTerritory : userShopList) {
 					logger.info("删除Apollo.UserShopTerritory里的脏数据: " + "shopId = " + userShopTerritory.getNewShopID()
-							+ "userId = " + userShopTerritory.getUserID());
+							+ " userId = " + userShopTerritory.getUserID());
 				}
 				addUserShopLog(userShopList, 0);//删除数据typeId=0
 			}
@@ -217,6 +220,9 @@ public class SyncApolloDataTask {
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
 		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
+			if(entry.getValue().equals("-38178")){
+				continue;
+			}
 			UserShopTerritory userShopTerritory = new UserShopTerritory();
 			userShopTerritory.setUserID(Integer.valueOf(entry.getValue()));
 			userShopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
@@ -230,7 +236,7 @@ public class SyncApolloDataTask {
 				userShopTerritoryDao.addToUserShopTerritoryByUserShopTerritoryList(userShopTerritoryList);
 				for (UserShopTerritory ust : userShopTerritoryList) {
 					logger.info("插入到Apollo.UserShopTerritory中: " + "shopId = " + ust.getNewShopID()
-							+ "userId = " + ust.getUserID());
+							+ " userId = " + ust.getUserID());
 				}
 				addUserShopLog(userShopTerritoryList, 1);//插入数据typeId=1
 			}
@@ -260,7 +266,7 @@ public class SyncApolloDataTask {
 				shopTerritoryDao.deleteShopTerritoryByShopTerritoryList(shopTerritoryList);
 				for (ShopTerritory st : shopTerritoryList) {
 					logger.info("删除Apollo.ShopTerritory里的脏数据: " + "shopId = " + st.getNewShopID()
-							+ "territoryId = " + st.getTerritoryID());
+							+ " territoryId = " + st.getTerritoryID());
 				}
 				addShopTerritoryLog(shopTerritoryList, 0);//删除数据typeId=0
 			}
@@ -289,7 +295,7 @@ public class SyncApolloDataTask {
 				shopTerritoryDao.addToShopTerritoryByShopTerritoryList(newShopTerritoryList);
 				for (ShopTerritory st : newShopTerritoryList) {
 					logger.info("插入到Apollo.ShopTerritory中: " + "shopId = " + st.getNewShopID()
-							+ "territoryId = " + st.getTerritoryID());
+							+ " territoryId = " + st.getTerritoryID());
 				}
 				addShopTerritoryLog(newShopTerritoryList, 1);//插入typeId=1
 			}
