@@ -13,19 +13,8 @@
     <name>customer-tool-job</name>
     <packaging>war</packaging>
 
-    <properties>
-        <env>alpha</env>
-    </properties>
-
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1-alpha-1</version>
-                <configuration>
-                    <warName>${artifactId}-${env}-${version}</warName>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
