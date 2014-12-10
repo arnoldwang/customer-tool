@@ -13,10 +13,6 @@
     <name>customer-tool-job</name>
     <packaging>war</packaging>
 
-    <properties>
-        <env>alpha</env>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
