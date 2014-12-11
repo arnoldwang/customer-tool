@@ -86,6 +86,10 @@ public class SyncApolloDataTask {
 
 		while (flag < 100) {
 			try {
+				if (!ConfigUtils.getSyncApolloDataTaskTrigger()){
+					logger.info("SyncApolloDataTask stop!");
+					return;
+				}
 
 				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(begin, end);
 				begin = end;
@@ -158,7 +162,6 @@ public class SyncApolloDataTask {
 			}
 			logger.info("this task run about " + end + " data!");
 		}
-		logger.info("this task run about " + end + " data!");
 	}
 
 
@@ -205,10 +208,7 @@ public class SyncApolloDataTask {
 		try {
 			if (userShopList.size() != 0) {
 				userShopTerritoryDao.deleteUserShopTerritoryByUserShopList(userShopList);
-				for (UserShopTerritory userShopTerritory : userShopList) {
-					logger.info("删除Apollo.UserShopTerritory里的脏数据: " + "shopId = " + userShopTerritory.getNewShopID()
-							+ " userId = " + userShopTerritory.getUserID());
-				}
+
 				addUserShopLog(userShopList, 0);//删除数据typeId=0
 			}
 		} catch (Exception e) {
@@ -234,10 +234,7 @@ public class SyncApolloDataTask {
 		try {
 			if (userShopTerritoryList.size() != 0) {
 				userShopTerritoryDao.addToUserShopTerritoryByUserShopTerritoryList(userShopTerritoryList);
-				for (UserShopTerritory ust : userShopTerritoryList) {
-					logger.info("插入到Apollo.UserShopTerritory中: " + "shopId = " + ust.getNewShopID()
-							+ " userId = " + ust.getUserID());
-				}
+
 				addUserShopLog(userShopTerritoryList, 1);//插入数据typeId=1
 			}
 		} catch (Exception e) {
@@ -264,10 +261,7 @@ public class SyncApolloDataTask {
 		try {
 			if (shopTerritoryList.size() != 0) {
 				shopTerritoryDao.deleteShopTerritoryByShopTerritoryList(shopTerritoryList);
-				for (ShopTerritory st : shopTerritoryList) {
-					logger.info("删除Apollo.ShopTerritory里的脏数据: " + "shopId = " + st.getNewShopID()
-							+ " territoryId = " + st.getTerritoryID());
-				}
+
 				addShopTerritoryLog(shopTerritoryList, 0);//删除数据typeId=0
 			}
 		} catch (Exception e) {
@@ -293,10 +287,7 @@ public class SyncApolloDataTask {
 		try {
 			if (newShopTerritoryList.size() != 0) {
 				shopTerritoryDao.addToShopTerritoryByShopTerritoryList(newShopTerritoryList);
-				for (ShopTerritory st : newShopTerritoryList) {
-					logger.info("插入到Apollo.ShopTerritory中: " + "shopId = " + st.getNewShopID()
-							+ " territoryId = " + st.getTerritoryID());
-				}
+
 				addShopTerritoryLog(newShopTerritoryList, 1);//插入typeId=1
 			}
 		} catch (Exception e) {
