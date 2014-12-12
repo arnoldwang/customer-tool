@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="OrgTerritory">
+    <typeAlias alias="OrgTerritory" type="com.dianping.customer.tool.entity.OrgTerritory"/>
+
+    <resultMap id="orgTerritory" class="OrgTerritory">
+        <result column="ID" property="id"/>
+        <result column="OrgTerritoryID" property="orgTerritoryID"/>
+        <result column="OrgID" property="orgID"/>
+        <result column="TerritoryID" property="territoryID"/>
+        <result column="Status" property="status"/>
+        <result column="CreatedTime" property="createdTime"/>
+        <result column="CreatedBy" property="createdBy"/>
+        <result column="LastModifiedTime" property="lastModifiedTime"/>
+        <result column="LastModifiedBy" property="lastModifiedBy"/>
+        <result column="ApproveID" property="approveID"/>
+        <result column="ApproveBy" property="approveBy"/>
+        <result column="ApproveStatus" property="approveStatus"/>
+        <result column="ApproveComment" property="approveComment"/>
+        <result property="externalID" column="ExternalId"/>
+    </resultMap>
+
+    <select id="queryOrgTerritoryByOrgID" resultMap="orgTerritory" parameterClass="map">
+        SELECT
+            ID,
+            IFNULL(OrgTerritoryID, 0) AS OrgTerritoryID,
+            OrgID,
+            TerritoryID,
+            IFNULL(Status, 1) AS Status,
+            CreatedTime,
+            IFNULL(CreatedBy, 0) AS CreatedBy,
+            LastModifiedTime,
+            IFNULL(LastModifiedBy, 0) AS LastModifiedBy,
+            IFNULL(ApproveID, 0) AS ApproveID,
+            IFNULL(ApproveBy, 0) AS ApproveBy,
+            IFNULL(ApproveStatus, 1) AS ApproveStatus,
+            ApproveComment,
+            ExternalId
+        FROM MR_OrgTerritory
+        WHERE OrgID = #orgId#
+        LIMIT 10000;
+    </select>
+
+    <delete id="deleteOrgTerritoryByOrgID" parameterClass="map">
+        DELETE FROM MR_OrgTerritory
+        WHERE OrgID = #orgId#
+    </delete>
+
+    <insert id="addToOrgTerritory" parameterClass="map">
+        INSERT INTO MR_OrgTerritory
+        (
+        OrgTerritoryID,
+        OrgID,
+        TerritoryID,
+        Status,
+        CreatedTime,
+        CreatedBy,
+        LastModifiedTime,
+        LastModifiedBy,
+        ApproveID,
+        ApproveBy,
+        ApproveStatus,
+        ApproveComment,
+        ExternalId
+        )
+        VALUES
+        (
+        #orgTerritory.orgTerritoryID#,
+        #orgTerritory.orgID#,
+        #orgTerritory.territoryID#,
+        #orgTerritory.status#,
+        #orgTerritory.createdTime#,
+        #orgTerritory.createdBy#,
+        NOW(),
+        #orgTerritory.lastModifiedBy#,
+        #orgTerritory.approveID#,
+        #orgTerritory.approveBy#,
+        #orgTerritory.approveStatus#,
+        #orgTerritory.approveComment#,
+        #orgTerritory.externalID#
+        )
+    </insert>
+</sqlMap>

@@ -8,4 +8,5 @@
 
     <sqlMap resource="config/sqlmap/sqlmapTool/sqlmap-shopTerritory.xml"/>
     <sqlMap resource="config/sqlmap/sqlmapTool/sqlmap-userShopTerritory.xml"/>
+    <sqlMap resource="config/sqlmap/sqlmapTool/sqlmap-orgTerritory.xml"/>
 </sqlMapConfig>

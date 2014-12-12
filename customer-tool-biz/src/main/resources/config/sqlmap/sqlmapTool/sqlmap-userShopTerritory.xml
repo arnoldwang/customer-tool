@@ -18,7 +18,7 @@
         <result property="approveBy" column="ApproveBy"/>
         <result property="approveStatus" column="ApproveStatus"/>
         <result property="approveComment" column="ApproveComment"/>
-        <result property="externalID" column="ExternalId" />
+        <result property="externalID" column="ExternalId"/>
     </resultMap>
 
     <resultMap id="userShop" class="UserShopTerritory">
@@ -33,14 +33,14 @@
             UserID,
             NewShopID,
             TerritoryID,
-            IFNULL(Status, 0) AS Status,
+            IFNULL(Status, 1) AS Status,
             CreatedTime,
             IFNULL(CreatedBy, 0) AS CreatedBy,
             LastModifiedTime,
             IFNULL(LastModifiedBy, 0) AS LastModifiedBy,
             IFNULL(ApproveID, 0) AS ApproveID,
             IFNULL(ApproveBy, 0) AS ApproveBy,
-            IFNULL(ApproveStatus, 0) AS ApproveStatus,
+            IFNULL(ApproveStatus, 1) AS ApproveStatus,
             ApproveComment,
             ExternalId
         FROM MR_UserShopTerritory

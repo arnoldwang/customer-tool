@@ -21,13 +21,13 @@
         <result property="approveBy" column="ApproveBy"/>
         <result property="approveStatus" column="ApproveStatus"/>
         <result property="approveComment" column="ApproveComment"/>
-        <result property="externalID" column="ExternalId" />
+        <result property="externalID" column="ExternalId"/>
     </resultMap>
 
     <resultMap id="shopTerritoryList" class="ShopTerritory">
         <result property="newShopID" column="NewShopID"/>
         <result property="territoryID" column="TerritoryID"/>
-        <result property="externalID" column="ExternalId" />
+        <result property="externalID" column="ExternalId"/>
     </resultMap>
 
 
@@ -41,14 +41,14 @@
           TgReleaseDate,
           TgOfflineDate,
           IFNULL(CooperationStatus, 0) AS CooperationStatus,
-          IFNULL(Status, 0) AS Status,
+          IFNULL(Status, 1) AS Status,
           CreatedTime,
           IFNULL(CreatedBy, 0) AS CreatedBy,
           LastModifiedTime,
           IFNULL(LastModifiedBy, 0) AS LastModifiedBy,
           IFNULL(ApproveID, 0) AS ApproveID,
           IFNULL(ApproveBy, 0) AS ApproveBy,
-          IFNULL(ApproveStatus, 0) AS ApproveStatus,
+          IFNULL(ApproveStatus, 1) AS ApproveStatus,
           ApproveComment,
           ExternalId
       FROM MR_ShopTerritory
@@ -126,25 +126,25 @@
 
     <insert id="addToShopTerritoryByShopTerritoryList" parameterClass="map">
         INSERT INTO MR_ShopTerritory
-            (
-            ShopTerritoryID,
-            NewShopID,
-            TerritoryID,
-            Kabc,
-            TgReleaseDate,
-            TgOfflineDate,
-            CooperationStatus,
-            Status,
-            CreatedTime,
-            CreatedBy,
-            LastModifiedTime,
-            LastModifiedBy,
-            ApproveID,
-            ApproveBy,
-            ApproveStatus,
-            ApproveComment,
-            ExternalId
-            )
+        (
+        ShopTerritoryID,
+        NewShopID,
+        TerritoryID,
+        Kabc,
+        TgReleaseDate,
+        TgOfflineDate,
+        CooperationStatus,
+        Status,
+        CreatedTime,
+        CreatedBy,
+        LastModifiedTime,
+        LastModifiedBy,
+        ApproveID,
+        ApproveBy,
+        ApproveStatus,
+        ApproveComment,
+        ExternalId
+        )
         VALUES
         <iterate property="newShopTerritoryList" conjunction=",">
             (

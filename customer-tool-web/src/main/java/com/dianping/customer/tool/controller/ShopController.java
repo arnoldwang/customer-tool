@@ -1,7 +1,6 @@
 package com.dianping.customer.tool.controller;
 
 import com.dianping.customer.tool.model.ShopInfoModel;
-import com.dianping.customer.tool.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,29 +12,36 @@ import javax.servlet.http.HttpServletRequest;
  */
 
 @Controller
-@RequestMapping("/shops")
 public class ShopController {
 	@Autowired
-	ShopService shopService;
+	com.dianping.customer.tool.service.ShopService shopService;
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/shopAndUserInfo", method = RequestMethod.GET)
 	@ResponseBody
-	public ShopInfoModel getShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
-		ShopInfoModel shopInfoModel = shopService.getShopInfo(shopId);
+	public ShopInfoModel getShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId, @RequestParam("userId") String userId) {
+		ShopInfoModel shopInfoModel = shopService.getShopAndUserInfo(shopId, userId);
 		return shopInfoModel;
 	}
 
-	@RequestMapping(value = "/territory", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/syncShopTerritory", method = RequestMethod.POST)
 	@ResponseBody
-	public ShopInfoModel updateShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
-		ShopInfoModel shopInfoModel = shopService.updateShopInfo(shopId);
+	public ShopInfoModel updateShopTerritoryInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
+		ShopInfoModel shopInfoModel = shopService.updateShopTerritoryInfo(shopId);
 		return shopInfoModel;
 	}
 
-	@RequestMapping(value = "/userShop", method = RequestMethod.POST)
+	@RequestMapping(value = "/syncUserShop", method = RequestMethod.POST)
 	@ResponseBody
 	public ShopInfoModel updateUserShopInfo(HttpServletRequest request, @RequestParam("shopId") String shopId) {
 		ShopInfoModel shopInfoModel = shopService.updateUserShopInfo(shopId);
+		return shopInfoModel;
+	}
+
+	@RequestMapping(value = "/syncOrgTerritory", method = RequestMethod.POST)
+	@ResponseBody
+	public ShopInfoModel updateOrgTerritoryInfo(HttpServletRequest request, @RequestParam("userId")String userId) {
+		ShopInfoModel shopInfoModel = shopService.updateOrgTerritoryInfo(userId);
 		return shopInfoModel;
 	}
 }

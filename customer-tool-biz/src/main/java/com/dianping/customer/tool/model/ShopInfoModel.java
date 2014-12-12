@@ -21,6 +21,11 @@ public class ShopInfoModel {
     String apolloLoginId;
     Map<String,String> sfTerritoryId2Name;
     List<String> apolloTerritoryIds;
+	String userId;
+	String sfTerritoryId;
+	String sfTerritoryName;
+	String apolloTerritoryId;
+
 
     public String getShopId() {
         return shopId;
@@ -133,4 +138,37 @@ public class ShopInfoModel {
     public void setApolloTerritoryIds(List<String> apolloTerritoryIds) {
         this.apolloTerritoryIds = apolloTerritoryIds;
     }
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getSfTerritoryId() {
+		return sfTerritoryId;
+	}
+
+	public void setSfTerritoryId(String sfTerritoryId) {
+		this.sfTerritoryId = sfTerritoryId;
+	}
+
+	public String getSfTerritoryName() {
+		return sfTerritoryName;
+	}
+
+	public void setSfTerritoryName(String sfTerritoryName) {
+		this.sfTerritoryName = sfTerritoryName;
+	}
+
+	public String getApolloTerritoryId() {
+		return apolloTerritoryId;
+	}
+
+	public void setApolloTerritoryId(String apolloTerritoryId) {
+		this.apolloTerritoryId = apolloTerritoryId;
+	}
+
 }
