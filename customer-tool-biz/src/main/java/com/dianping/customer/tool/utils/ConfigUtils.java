@@ -18,4 +18,12 @@ public class ConfigUtils {
 	public static Boolean getSyncApolloDataTaskTrigger() {
 		return PropertiesLoaderSupportUtils.getBoolProperty("customer-tool-job.syncApolloDataTaskTrigger", true);
 	}
+
+	public static String getSyncApolloDataTaskType() {
+		return PropertiesLoaderSupportUtils.getProperty("customer-tool-job.syncApolloDataTaskType");
+	}
+
+	public static String getSyncApolloDataTaskTerritoryId(){
+		return PropertiesLoaderSupportUtils.getProperty("customer-tool-job.syncApolloDataTaskTerritoryId");
+	}
 }

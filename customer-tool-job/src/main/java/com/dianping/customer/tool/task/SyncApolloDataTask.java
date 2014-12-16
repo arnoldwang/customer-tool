@@ -64,11 +64,13 @@ public class SyncApolloDataTask {
 			return;
 		}
 
+		String type = ConfigUtils.getSyncApolloDataTaskType();
+
 		logger.info("SyncApolloDataTask.running...");
 		System.out.println("SyncApolloDataTask.running...");
 		long beginTime = System.currentTimeMillis();
 
-		syncSalesForceToApollo();
+		syncSalesForceToApollo(type);
 
 		long endTime = System.currentTimeMillis();
 		logger.info("SyncApolloDataTask.end");
@@ -78,22 +80,30 @@ public class SyncApolloDataTask {
 	}
 
 
-	private void syncSalesForceToApollo() {
-
+	private void syncSalesForceToApollo(String type) {
 		int begin = DEFAULT_INDEX;
 		int end = begin + DEFAULT_SIZE;
+		int index = DEFAULT_INDEX;
+		int pageSize = DEFAULT_SIZE;
+
 		int flag = 0;
 
 		while (flag < 100) {
 			try {
-				if (!ConfigUtils.getSyncApolloDataTaskTrigger()){
+				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
 					return;
 				}
 
-				List<HashMap<String, Object>> salesForceInfoList = getSalesForceInfoList(begin, end);
-				begin = end;
-				end = begin + DEFAULT_SIZE;
+				List<HashMap<String, Object>> salesForceInfoList;
+				if (type.equals("all")) {
+					salesForceInfoList = getSalesForceInfoList(begin, end, type);
+					begin = end;
+					end = begin + DEFAULT_SIZE;
+				} else {
+					salesForceInfoList = getSalesForceInfoList(index, pageSize, type);
+				}
+
 
 				if (salesForceInfoList == null || salesForceInfoList.size() == 0) {
 					flag++;
@@ -155,17 +165,21 @@ public class SyncApolloDataTask {
 
 				insertShopTerritoryRightData(shopTerritoryMap, shopExternalMap);
 
+				index++;
 				flag = 0;
 			} catch (Exception e) {
 				flag++;
 				logger.warn("something error", e);
 			}
-			logger.info("this task run about " + end + " data!");
+			if(type.equals("all"))
+				logger.info("this task run about " + end + " data!");
+			else
+				logger.info("this task run about " + index * pageSize + " data!");
 		}
 	}
 
 
-	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end) {
+	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type) {
 		List<HashMap<String, Object>> salesForceInfoList = Lists.newArrayList();
 
 		try {
@@ -176,7 +190,18 @@ public class SyncApolloDataTask {
 			Map<String, String> uriVariables = Maps.newHashMap();
 			uriVariables.put("begin", String.valueOf(begin));
 			uriVariables.put("end", String.valueOf(end));
-			String url = smtShopInfoListUrl + "?begin={begin}&end={end}";
+			String url = null;
+			if (type.equals("all")) {
+				url = smtShopInfoListUrl + "?type=all&begin={begin}&end={end}";
+			}
+			if (type.equals("territory")) {
+				String territoryId = ConfigUtils.getSyncApolloDataTaskTerritoryId();
+				uriVariables.put("territoryId", territoryId);
+				url = smtShopInfoListUrl + "?type=territory&territoryId={territoryId}&index={begin}&pageSize={end}";
+			}
+			if (type.equals("increment")) {
+				url = smtShopInfoListUrl + "?type=increment&index={begin}&pageSize={end}";
+			}
 			ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
 			if (response.getStatusCode().value() == 401) {
 				token = salesForceOauthTokenUtil.getLoginToken();
@@ -220,7 +245,7 @@ public class SyncApolloDataTask {
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
 		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
-			if(entry.getValue().equals("-38178")){
+			if (entry.getValue().equals("-38178")) {
 				continue;
 			}
 			UserShopTerritory userShopTerritory = new UserShopTerritory();
