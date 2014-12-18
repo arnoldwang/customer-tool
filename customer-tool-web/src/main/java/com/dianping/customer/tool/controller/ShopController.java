@@ -1,6 +1,7 @@
 package com.dianping.customer.tool.controller;
 
 import com.dianping.customer.tool.model.ShopInfoModel;
+import com.dianping.customer.tool.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ShopController {
 	@Autowired
-	com.dianping.customer.tool.service.ShopService shopService;
+	ShopService shopService;
 
 	@RequestMapping(value = "/shopAndUserInfo", method = RequestMethod.GET)
 	@ResponseBody

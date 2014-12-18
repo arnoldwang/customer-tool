@@ -9,18 +9,12 @@ import com.dianping.customer.tool.entity.OrgTerritory;
 import com.dianping.customer.tool.entity.ShopTerritory;
 import com.dianping.customer.tool.entity.UserShopTerritory;
 import com.dianping.customer.tool.exception.BizException;
-import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.model.ShopInfoModel;
+import com.dianping.customer.tool.service.SalesForceService;
 import com.dianping.customer.tool.service.ShopService;
-import com.dianping.customer.tool.utils.SalesForceOauthTokenUtil;
 import com.dianping.salesbu.api.UserGroupService;
-import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -29,12 +23,8 @@ import java.util.regex.Pattern;
 /**
  * Created by zaza on 14/11/26.
  */
+@Component
 public class ShopServiceImpl implements ShopService {
-	@Autowired
-	private SalesForceOauthTokenUtil salesForceOauthTokenUtil;
-
-	@Autowired
-	private RestTemplate restTemplate;
 
 	@Autowired
 	private ShopTerritoryDao shopTerritoryDao;
@@ -51,47 +41,8 @@ public class ShopServiceImpl implements ShopService {
 	@Autowired
 	private UserGroupService userGroupService;
 
-	private String smtShopInfoURL;
-
-	private String smtUserInfoURL;
-
-	private String token;
-
-	public ServiceResult getSfShopInfo(String shopId) {
-		HttpHeaders headers = new HttpHeaders();
-		if (token == null)
-			token = salesForceOauthTokenUtil.getLoginToken();
-		headers.set("Authorization", "Bearer " + token);
-		Map<String, String> uriVariables = Maps.newHashMap();
-		uriVariables.put("shopId", shopId);
-		String url = getRESTUrl(smtShopInfoURL);
-		ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-		if (response.getStatusCode().value() == 401) {
-			token = salesForceOauthTokenUtil.getLoginToken();
-			headers.set("Authorization", "Bearer " + token);
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-		}
-
-		return response.getBody();
-	}
-
-	public ServiceResult getSfUserTerritoryInfo(String loginId){
-		HttpHeaders headers = new HttpHeaders();
-		if (token == null)
-			token = salesForceOauthTokenUtil.getLoginToken();
-		headers.set("Authorization", "Bearer " + token);
-		Map<String, String> uriVariables = Maps.newHashMap();
-		uriVariables.put("loginId", loginId);
-		String url = smtUserInfoURL + "?loginId={loginId}";
-		ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-		if (response.getStatusCode().value() == 401) {
-			token = salesForceOauthTokenUtil.getLoginToken();
-			headers.set("Authorization", "Bearer " + token);
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-		}
-		return response.getBody();
-	}
-
+	@Autowired
+	private SalesForceService salesForceService;
 
 	@Override
 	public ShopInfoModel getShopAndUserInfo(String shopId, String userId) {
@@ -103,7 +54,7 @@ public class ShopServiceImpl implements ShopService {
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
 
 		if (!shopId.equals("")) {
-			Map<String, Object> shopMsg = (HashMap<String, Object>) getSfShopInfo(shopId).getMsg();
+			Map<String, Object> shopMsg = (HashMap<String, Object>) salesForceService.getSfShopInfo(shopId).getMsg();
 			if (shopMsg.get("shopId") == null)
 				throw new BizException("未找到商户信息，请输入正确Id!");
 			List<ShopTerritory> shopTerritoryList = shopTerritoryDao.queryShopTerritoryByNewShopID(Integer.valueOf(shopId));
@@ -138,7 +89,7 @@ public class ShopServiceImpl implements ShopService {
 		}
 
 		if(!userId.equals("")){
-			Map<String, Object> userMsg = (HashMap<String, Object>) getSfUserTerritoryInfo(userId).getMsg();
+			Map<String, Object> userMsg = (HashMap<String, Object>) salesForceService.getSfUserTerritoryInfo(userId).getMsg();
 			if(userMsg.get("userId") == null)
 				throw new BizException("未找到用户信息，请输入正确Id!");
 			shopInfoModel.setUserId((String)userMsg.get("userId"));
@@ -154,7 +105,7 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public ShopInfoModel updateShopTerritoryInfo(String shopId) {
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
-		Map<String, Object> msg = (HashMap<String, Object>) getSfShopInfo(shopId).getMsg();
+		Map<String, Object> msg = (HashMap<String, Object>) salesForceService.getSfShopInfo(shopId).getMsg();
 		shopTerritoryDao.deleteShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		ShopTerritory shopTerritory = new ShopTerritory();
 		Map<String, String> territoryId2Name = (LinkedHashMap<String, String>) msg.get("territoryId2Name");
@@ -181,7 +132,7 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public ShopInfoModel updateUserShopInfo(String shopId) {
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
-		Map<String, Object> msg = (HashMap<String, Object>) getSfShopInfo(shopId).getMsg();
+		Map<String, Object> msg = (HashMap<String, Object>) salesForceService.getSfShopInfo(shopId).getMsg();
 		userShopTerritoryDao.deleteUserShopTerritoryByNewShopID(Integer.valueOf(shopId));
 		UserShopTerritory userShopTerritory = new UserShopTerritory();
 		userShopTerritory.setUserID(Integer.valueOf((String) msg.get("ownerLoginId")));
@@ -203,7 +154,7 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public ShopInfoModel updateOrgTerritoryInfo(String userId) {
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
-		Map<String, Object> userMsg = (HashMap<String, Object>) getSfUserTerritoryInfo(userId).getMsg();
+		Map<String, Object> userMsg = (HashMap<String, Object>) salesForceService.getSfUserTerritoryInfo(userId).getMsg();
 		orgTerritoryDao.deleteOrgTerritoryByOrgID(Integer.valueOf(userId));
 		OrgTerritory orgTerritory = new OrgTerritory();
 		orgTerritory.setOrgID(Integer.valueOf(userId));
@@ -218,18 +169,6 @@ public class ShopServiceImpl implements ShopService {
 		return shopInfoModel;
 	}
 
-	private String getRESTUrl(String hostUrl) {
-		hostUrl += "?shopId={shopId}";
-		return hostUrl;
-	}
-
-	public void setSmtShopInfoURL(String smtShopInfoURL) {
-		this.smtShopInfoURL = smtShopInfoURL;
-	}
-
-	public void setSmtUserInfoURL(String smtUserInfoURL) {
-		this.smtUserInfoURL = smtUserInfoURL;
-	}
 
 	private boolean isNumber(String str) {
 		Pattern pattern = Pattern.compile("-?[0-9]+");

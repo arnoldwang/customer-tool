@@ -11,6 +11,8 @@ import com.dianping.customer.tool.entity.UserShopTerritory;
 import com.dianping.customer.tool.job.dao.ShopTerritoryHistoryDao;
 import com.dianping.customer.tool.job.dao.UserShopHistoryDao;
 import com.dianping.customer.tool.model.ServiceResult;
+import com.dianping.customer.tool.service.SalesForceService;
+import com.dianping.customer.tool.service.impl.SalesForceServiceImpl;
 import com.dianping.customer.tool.utils.Beans;
 import com.dianping.customer.tool.utils.ConfigUtils;
 import com.dianping.customer.tool.utils.SalesForceOauthTokenUtil;
@@ -45,14 +47,8 @@ public class SyncApolloDataTask {
 
 	private ShopTerritoryHistoryDao shopTerritoryHistoryDao = Beans.getBean(ShopTerritoryHistoryDao.class);
 
-	private String token;
+	private SalesForceService salesForceService = Beans.getBean(SalesForceServiceImpl.class);
 
-	private String smtShopInfoListUrl;
-
-
-	public void setSmtShopInfoListUrl(String smtShopInfoListUrl) {
-		this.smtShopInfoListUrl = smtShopInfoListUrl;
-	}
 
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataTask.class);
 
@@ -97,11 +93,11 @@ public class SyncApolloDataTask {
 
 				List<HashMap<String, Object>> salesForceInfoList;
 				if (type.equals("all")) {
-					salesForceInfoList = getSalesForceInfoList(begin, end, type);
+					salesForceInfoList = salesForceService.getSalesForceInfoList(begin, end, type);
 					begin = end;
 					end = begin + DEFAULT_SIZE;
 				} else {
-					salesForceInfoList = getSalesForceInfoList(index, pageSize, type);
+					salesForceInfoList = salesForceService.getSalesForceInfoList(index, pageSize, type);
 				}
 
 
@@ -176,43 +172,6 @@ public class SyncApolloDataTask {
 			else
 				logger.info("this task run about " + index * pageSize + " data!");
 		}
-	}
-
-
-	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type) {
-		List<HashMap<String, Object>> salesForceInfoList = Lists.newArrayList();
-
-		try {
-			HttpHeaders headers = new HttpHeaders();
-			if (token == null)
-				token = salesForceOauthTokenUtil.getLoginToken();
-			headers.set("Authorization", "Bearer " + token);
-			Map<String, String> uriVariables = Maps.newHashMap();
-			uriVariables.put("begin", String.valueOf(begin));
-			uriVariables.put("end", String.valueOf(end));
-			String url = null;
-			if (type.equals("all")) {
-				url = smtShopInfoListUrl + "?type=all&begin={begin}&end={end}";
-			}
-			if (type.equals("territory")) {
-				String territoryId = ConfigUtils.getSyncApolloDataTaskTerritoryId();
-				uriVariables.put("territoryId", territoryId);
-				url = smtShopInfoListUrl + "?type=territory&territoryId={territoryId}&index={begin}&pageSize={end}";
-			}
-			if (type.equals("increment")) {
-				url = smtShopInfoListUrl + "?type=increment&index={begin}&pageSize={end}";
-			}
-			ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-			if (response.getStatusCode().value() == 401) {
-				token = salesForceOauthTokenUtil.getLoginToken();
-				headers.set("Authorization", "Bearer " + token);
-				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-			}
-			salesForceInfoList = ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
-		} catch (Exception e) {
-			logger.warn("get SalesForce data failed!", e);
-		}
-		return salesForceInfoList;
 	}
 
 	public void addUserShopLog(List<UserShopTerritory> userShopList, int typeId) {
