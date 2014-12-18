@@ -1,7 +1,6 @@
 package com.dianping.customer.tool.task;
 
 import com.beust.jcommander.internal.Lists;
-import com.beust.jcommander.internal.Maps;
 import com.dianping.customer.tool.dao.ShopTerritoryDao;
 import com.dianping.customer.tool.dao.UserShopTerritoryDao;
 import com.dianping.customer.tool.entity.ShopTerritory;
@@ -10,19 +9,11 @@ import com.dianping.customer.tool.entity.UserShopHistory;
 import com.dianping.customer.tool.entity.UserShopTerritory;
 import com.dianping.customer.tool.job.dao.ShopTerritoryHistoryDao;
 import com.dianping.customer.tool.job.dao.UserShopHistoryDao;
-import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.service.SalesForceService;
-import com.dianping.customer.tool.service.impl.SalesForceServiceImpl;
-import com.dianping.customer.tool.utils.Beans;
 import com.dianping.customer.tool.utils.ConfigUtils;
-import com.dianping.customer.tool.utils.SalesForceOauthTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -35,19 +26,17 @@ public class SyncApolloDataTask {
 
 	private static final int DEFAULT_INDEX = 1;
 
-	private SalesForceOauthTokenUtil salesForceOauthTokenUtil = Beans.getBean(SalesForceOauthTokenUtil.class);
+	@Autowired
+	private UserShopTerritoryDao userShopTerritoryDao;
+	@Autowired
+	private ShopTerritoryDao shopTerritoryDao;
+	@Autowired
+	private UserShopHistoryDao userShopHistoryDao;
+	@Autowired
+	private ShopTerritoryHistoryDao shopTerritoryHistoryDao;
 
-	private RestTemplate restTemplate = Beans.getBean(RestTemplate.class);
-
-	private UserShopTerritoryDao userShopTerritoryDao = Beans.getBean(UserShopTerritoryDao.class);
-
-	private ShopTerritoryDao shopTerritoryDao = Beans.getBean(ShopTerritoryDao.class);
-
-	private UserShopHistoryDao userShopHistoryDao = Beans.getBean(UserShopHistoryDao.class);
-
-	private ShopTerritoryHistoryDao shopTerritoryHistoryDao = Beans.getBean(ShopTerritoryHistoryDao.class);
-
-	private SalesForceService salesForceService = Beans.getBean(SalesForceServiceImpl.class);
+	@Autowired
+	private SalesForceService salesForceService;
 
 
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataTask.class);
@@ -167,7 +156,7 @@ public class SyncApolloDataTask {
 				flag++;
 				logger.warn("something error", e);
 			}
-			if(type.equals("all"))
+			if (type.equals("all"))
 				logger.info("this task run about " + end + " data!");
 			else
 				logger.info("this task run about " + index * pageSize + " data!");
