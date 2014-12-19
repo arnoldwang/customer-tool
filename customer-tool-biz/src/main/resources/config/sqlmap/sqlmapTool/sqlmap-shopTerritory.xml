@@ -117,10 +117,9 @@
     </select>
 
     <delete id="deleteShopTerritoryByShopTerritoryList" parameterClass="map">
-        DELETE FROM MR_ShopTerritory
-        WHERE (NewShopID, TerritoryID) IN
-        <iterate property="shopTerritoryList" open="(" close=")" conjunction=",">
-            (#shopTerritoryList[].newShopID#, #shopTerritoryList[].territoryID#)
+        DELETE FROM MR_ShopTerritory WHERE
+        <iterate property="shopTerritoryList" conjunction=" or ">
+            (NewShopID = #shopTerritoryList[].newShopID# And TerritoryID = #shopTerritoryList[].territoryID#)
         </iterate>
     </delete>
 

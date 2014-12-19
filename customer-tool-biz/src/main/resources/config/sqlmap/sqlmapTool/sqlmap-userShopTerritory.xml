@@ -103,10 +103,9 @@
     </select>
 
     <delete id="deleteUserShopTerritoryByUserShopList" parameterClass="map">
-        DELETE FROM MR_UserShopTerritory
-        WHERE (UserID, NewShopID) IN
-        <iterate property="userShopList" open="(" close=")" conjunction=",">
-            (#userShopList[].userID#, #userShopList[].newShopID#)
+        DELETE FROM MR_UserShopTerritory where
+        <iterate property="userShopList" conjunction=" or ">
+            (UserID = #userShopList[].userID# And NewShopID = #userShopList[].newShopID#)
         </iterate>
     </delete>
 
