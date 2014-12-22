@@ -22,7 +22,7 @@
         <property name="restTemplate" ref="restTemplate"/>
     </bean>
 
-    <bean id="salesForceServiceImpl" class="com.dianping.customer.tool.service.impl.SalesForceServiceImpl">
+    <bean id="salesForceServiceImpl" class="com.dianping.customer.tool.service.impl.SalesForceServiceImpl" scope="prototype">
         <property name="smtShopInfoURL" value="${customer-tool-web.salesforce.shopinfo.url}"/>
         <property name="smtUserInfoURL" value="${customer-tool-web.salesforce.userinfo.url}"/>
         <property name="smtShopInfoListURL" value="${customer-tool-job.salesforce.shopinfo.url}" />

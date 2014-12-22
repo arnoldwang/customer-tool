@@ -26,4 +26,8 @@ public class ConfigUtils {
 	public static String getSyncApolloDataTaskTerritoryId(){
 		return PropertiesLoaderSupportUtils.getProperty("customer-tool-job.syncApolloDataTaskTerritoryId");
 	}
+
+	public static int getSyncApolloDataTaskDefaultThreadPage(){
+		return PropertiesLoaderSupportUtils.getIntProperty("customer-tool-job.syncApolloDataTask.defualtThreadPage", 5100000);
+	}
 }

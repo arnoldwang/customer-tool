@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -18,6 +19,7 @@ import java.util.*;
  * User: zhenwei.wang
  * Date: 14-12-18
  */
+@Component
 public class SalesForceServiceImpl implements SalesForceService {
 
 	@Autowired
@@ -84,6 +86,7 @@ public class SalesForceServiceImpl implements SalesForceService {
 				url = smtShopInfoListURL + "?type=increment&index={begin}&pageSize={end}";
 			}
 			ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+
 			if (response.getStatusCode().value() == 401) {
 				token = salesForceOauthTokenUtil.getLoginToken();
 				headers.set("Authorization", "Bearer " + token);
@@ -138,7 +141,7 @@ public class SalesForceServiceImpl implements SalesForceService {
 		} catch (Exception e) {
 			logger.warn("get SalesForce data failed!", e);
 		}
-		return Integer.valueOf(((Map<String, String>)response.getBody().getMsg()).get("shopId"));
+		return Integer.valueOf(((Map<String, String>) response.getBody().getMsg()).get("shopId"));
 	}
 
 	public void setSmtShopInfoURL(String smtShopInfoURL) {
