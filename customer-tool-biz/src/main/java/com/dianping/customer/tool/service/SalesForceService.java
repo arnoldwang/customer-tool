@@ -16,4 +16,6 @@ public interface SalesForceService {
 	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type);
 
 	public ServiceResult getSfUserTerritoryInfo(String loginId);
+
+	public int getSfMaxShopId();
 }

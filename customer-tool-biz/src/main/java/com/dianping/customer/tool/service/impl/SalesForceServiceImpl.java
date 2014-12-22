@@ -119,6 +119,28 @@ public class SalesForceServiceImpl implements SalesForceService {
 		return response.getBody();
 	}
 
+	@Override
+	public int getSfMaxShopId() {
+		ResponseEntity<ServiceResult> response = new ResponseEntity<ServiceResult>(HttpStatus.REQUEST_TIMEOUT);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			if (token == null)
+				token = salesForceOauthTokenUtil.getLoginToken();
+			headers.set("Authorization", "Bearer " + token);
+			Map<String, String> uriVariables = Maps.newHashMap();
+			String url = smtShopInfoListURL + "?type=maxShopId";
+			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			if (response.getStatusCode().value() == 401) {
+				token = salesForceOauthTokenUtil.getLoginToken();
+				headers.set("Authorization", "Bearer " + token);
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			}
+		} catch (Exception e) {
+			logger.warn("get SalesForce data failed!", e);
+		}
+		return Integer.valueOf(((Map<String, String>)response.getBody().getMsg()).get("shopId"));
+	}
+
 	public void setSmtShopInfoURL(String smtShopInfoURL) {
 		this.smtShopInfoURL = smtShopInfoURL;
 	}

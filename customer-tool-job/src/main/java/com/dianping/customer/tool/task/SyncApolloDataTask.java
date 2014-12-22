@@ -16,6 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * User: zhenwei.wang
@@ -26,6 +30,8 @@ public class SyncApolloDataTask {
 
 	private static final int DEFAULT_INDEX = 1;
 
+	private static final int DEFAULT_THREAD_NUM = 5;
+
 	@Autowired
 	private UserShopTerritoryDao userShopTerritoryDao;
 	@Autowired
@@ -34,7 +40,6 @@ public class SyncApolloDataTask {
 	private UserShopHistoryDao userShopHistoryDao;
 	@Autowired
 	private ShopTerritoryHistoryDao shopTerritoryHistoryDao;
-
 	@Autowired
 	private SalesForceService salesForceService;
 
@@ -50,12 +55,32 @@ public class SyncApolloDataTask {
 		}
 
 		String type = ConfigUtils.getSyncApolloDataTaskType();
+		int maxShopId = salesForceService.getSfMaxShopId();
+		int threadShopNum = maxShopId / 5;
+		System.out.println("+++++++++++++++++++++++++++++++maxShopId = " + maxShopId);
+		System.out.println("+++++++++++++++++++++++++++++++threadShopNum = " + threadShopNum);
+
+		ExecutorService exe = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
+		List<Future> futureList = Lists.newArrayList();
 
 		logger.info("SyncApolloDataTask.running...");
 		System.out.println("SyncApolloDataTask.running...");
 		long beginTime = System.currentTimeMillis();
 
-		syncSalesForceToApollo(type);
+		for(int i = 0; i < DEFAULT_THREAD_NUM; i++){
+			futureList.add(exe.submit(new WorkThread(type, DEFAULT_INDEX + threadShopNum * i, DEFAULT_INDEX + threadShopNum * (i + 1))));
+		}
+		System.out.println("+++++++++++++++++++++++++++++++futureListNum = " + futureList.size());
+
+		for (int i = 0; i < DEFAULT_THREAD_NUM; i++){
+			try {
+				futureList.get(i).get();
+			} catch (InterruptedException e) {
+				logger.warn("This thread: " + Thread.currentThread().getName() + " is interrupted!", e);
+			} catch (ExecutionException e) {
+				logger.warn("This thread: " + Thread.currentThread().getName() + " is failed!", e);
+			}
+		}
 
 		long endTime = System.currentTimeMillis();
 		logger.info("SyncApolloDataTask.end");
@@ -65,15 +90,15 @@ public class SyncApolloDataTask {
 	}
 
 
-	private void syncSalesForceToApollo(String type) {
-		int begin = DEFAULT_INDEX;
+	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
+		int begin = threadBegin;
 		int end = begin + DEFAULT_SIZE;
 		int index = DEFAULT_INDEX;
 		int pageSize = DEFAULT_SIZE;
 
 		int flag = 0;
 
-		while (flag < 100) {
+		while (flag < 100 && end <= threadEnd) {
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -157,7 +182,7 @@ public class SyncApolloDataTask {
 				logger.warn("something error", e);
 			}
 			if (type.equals("all"))
-				logger.info("this task run about " + end + " data!");
+				logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
 			else
 				logger.info("this task run about " + index * pageSize + " data!");
 		}
@@ -265,6 +290,24 @@ public class SyncApolloDataTask {
 			}
 		} catch (Exception e) {
 			logger.warn("insertApolloShopTerritory.error", e);
+		}
+	}
+
+	private class WorkThread implements Runnable{
+		String type;
+		int threadBegin;
+		int threadEnd;
+
+		public WorkThread(String type, int threadBegin, int threadEnd ){
+			this.type = type;
+			this.threadBegin = threadBegin;
+			this.threadEnd = threadEnd;
+		}
+
+		@Override
+		public void run() {
+			syncSalesForceToApollo(type, threadBegin, threadEnd);
+			logger.info("This thread: " + Thread.currentThread().getName() + " end!");
 		}
 	}
 }

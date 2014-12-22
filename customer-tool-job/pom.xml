@@ -74,6 +74,20 @@
             <groupId>com.dianping</groupId>
             <artifactId>customer-tool-biz</artifactId>
             <version>${project.version.biz}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.dianping.swallow</groupId>
+                    <artifactId>swallow-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dianping.swallow</groupId>
+                    <artifactId>swallow-consumerclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dianping.swallow</groupId>
+                    <artifactId>swallow-producerclient</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
@@ -122,6 +136,14 @@
                 <exclusion>
                     <groupId>com.dianping.swallow</groupId>
                     <artifactId>swallow-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dianping.swallow</groupId>
+                    <artifactId>swallow-consumerclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dianping.swallow</groupId>
+                    <artifactId>swallow-producerclient</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -274,6 +296,12 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>1.8.6</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>
