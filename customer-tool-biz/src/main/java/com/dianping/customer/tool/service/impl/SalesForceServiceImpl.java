@@ -1,6 +1,5 @@
 package com.dianping.customer.tool.service.impl;
 
-import com.beust.jcommander.internal.Lists;
 import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.service.SalesForceService;
 import com.dianping.customer.tool.utils.ConfigUtils;
@@ -62,10 +61,8 @@ public class SalesForceServiceImpl implements SalesForceService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type) {
-		List<HashMap<String, Object>> salesForceInfoList = Lists.newArrayList();
+	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type){
 
-		try {
 			HttpHeaders headers = new HttpHeaders();
 			if (token == null)
 				token = salesForceOauthTokenUtil.getLoginToken();
@@ -85,6 +82,7 @@ public class SalesForceServiceImpl implements SalesForceService {
 			if (type.equals("increment")) {
 				url = smtShopInfoListURL + "?type=increment&index={begin}&pageSize={end}";
 			}
+
 			ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
 
 			if (response.getStatusCode().value() == 401) {
@@ -92,11 +90,8 @@ public class SalesForceServiceImpl implements SalesForceService {
 				headers.set("Authorization", "Bearer " + token);
 				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
 			}
-			salesForceInfoList = ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
-		} catch (Exception e) {
-			logger.warn("get SalesForce data failed!", e);
-		}
-		return salesForceInfoList;
+
+		return ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
 	}
 
 	@Override
