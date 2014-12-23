@@ -91,6 +91,10 @@ public class SalesForceServiceImpl implements SalesForceService {
 				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
 			}
 
+			if( response.getBody().getCode() == 500){
+				logger.warn("This thread: " + Thread.currentThread().getName() + " has error!" + response.getBody().getMsg().toString());
+			}
+
 		return ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
 	}
 
