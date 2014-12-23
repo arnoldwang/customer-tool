@@ -1,5 +1,6 @@
 package com.dianping.customer.tool.service.impl;
 
+import com.dianping.customer.tool.exception.SalesForceException;
 import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.service.SalesForceService;
 import com.dianping.customer.tool.utils.ConfigUtils;
@@ -61,39 +62,45 @@ public class SalesForceServiceImpl implements SalesForceService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type){
-
-			HttpHeaders headers = new HttpHeaders();
-			if (token == null)
-				token = salesForceOauthTokenUtil.getLoginToken();
+	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type) {
+		ResponseEntity<ServiceResult> response = new ResponseEntity<ServiceResult>(HttpStatus.REQUEST_TIMEOUT);
+		HttpHeaders headers = new HttpHeaders();
+		if (token == null)
+			token = salesForceOauthTokenUtil.getLoginToken();
+		headers.set("Authorization", "Bearer " + token);
+		Map<String, String> uriVariables = com.beust.jcommander.internal.Maps.newHashMap();
+		uriVariables.put("begin", String.valueOf(begin));
+		uriVariables.put("end", String.valueOf(end));
+		String url = null;
+		if (type.equals("all")) {
+			url = smtShopInfoListURL + "?type=all&begin={begin}&end={end}";
+		}
+		if (type.equals("territory")) {
+			String territoryId = ConfigUtils.getSyncApolloDataTaskTerritoryId();
+			uriVariables.put("territoryId", territoryId);
+			url = smtShopInfoListURL + "?type=territory&territoryId={territoryId}&index={begin}&pageSize={end}";
+		}
+		if (type.equals("increment")) {
+			url = smtShopInfoListURL + "?type=increment&index={begin}&pageSize={end}";
+		}
+		try {
+			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+		} catch (Exception e) {
+			response = null;
+			ResponseEntity<String> s = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
+			logger.warn("This thread: " + Thread.currentThread().getName() + s.getBody());
+		}
+		if(response == null)
+			throw new SalesForceException("get SalesForce data failed!");
+		if (response.getStatusCode().value() == 401) {
+			token = salesForceOauthTokenUtil.getLoginToken();
 			headers.set("Authorization", "Bearer " + token);
-			Map<String, String> uriVariables = com.beust.jcommander.internal.Maps.newHashMap();
-			uriVariables.put("begin", String.valueOf(begin));
-			uriVariables.put("end", String.valueOf(end));
-			String url = null;
-			if (type.equals("all")) {
-				url = smtShopInfoListURL + "?type=all&begin={begin}&end={end}";
-			}
-			if (type.equals("territory")) {
-				String territoryId = ConfigUtils.getSyncApolloDataTaskTerritoryId();
-				uriVariables.put("territoryId", territoryId);
-				url = smtShopInfoListURL + "?type=territory&territoryId={territoryId}&index={begin}&pageSize={end}";
-			}
-			if (type.equals("increment")) {
-				url = smtShopInfoListURL + "?type=increment&index={begin}&pageSize={end}";
-			}
+			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+		}
 
-			ResponseEntity<ServiceResult> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-
-			if (response.getStatusCode().value() == 401) {
-				token = salesForceOauthTokenUtil.getLoginToken();
-				headers.set("Authorization", "Bearer " + token);
-				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-			}
-
-			if( response.getBody().getCode() == 500){
-				logger.warn("This thread: " + Thread.currentThread().getName() + " has error!" + response.getBody().getMsg().toString());
-			}
+		if (response.getBody().getCode() == 500) {
+			logger.warn("This thread: " + Thread.currentThread().getName() + " has error!" + response.getBody().getMsg().toString());
+		}
 
 		return ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
 	}

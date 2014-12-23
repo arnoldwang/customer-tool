@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 public class SyncApolloDataTask {
 	private static final int DEFAULT_INDEX = 1;
 
-	private static final int DEFAULT_THREAD_NUM = 1;
+	private static final int DEFAULT_THREAD_NUM = 3;
 
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataTask.class);
 
