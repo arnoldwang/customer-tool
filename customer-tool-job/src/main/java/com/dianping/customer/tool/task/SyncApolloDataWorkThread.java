@@ -23,7 +23,7 @@ import java.util.*;
  * Date: 14-12-22
  */
 @Component
-public class SyncApolloDataWorkThread implements Runnable{
+public class SyncApolloDataWorkThread implements Runnable {
 	private static final int DEFAULT_SIZE = 10000;
 	private static final int DEFAULT_INDEX = 1;
 
@@ -44,10 +44,11 @@ public class SyncApolloDataWorkThread implements Runnable{
 
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataWorkThread.class);
 
-	public SyncApolloDataWorkThread(){
+	public SyncApolloDataWorkThread() {
+
 	}
 
-	public SyncApolloDataWorkThread(String type, int threadBegin, int threadEnd){
+	public SyncApolloDataWorkThread(String type, int threadBegin, int threadEnd) {
 		this.type = type;
 		this.threadBegin = threadBegin;
 		this.threadEnd = threadEnd;
@@ -75,12 +76,19 @@ public class SyncApolloDataWorkThread implements Runnable{
 				}
 
 				List<HashMap<String, Object>> salesForceInfoList;
-				if (type.equals("all")) {
-					salesForceInfoList = salesForceService.getSalesForceInfoList(begin, end, type);
-					begin = end;
-					end = begin + DEFAULT_SIZE;
-				} else {
-					salesForceInfoList = salesForceService.getSalesForceInfoList(index, pageSize, type);
+				try {
+					if (type.equals("all")) {
+						salesForceInfoList = salesForceService.getSalesForceInfoList(begin, end, type);
+						begin = end;
+						end = begin + DEFAULT_SIZE;
+					} else {
+						salesForceInfoList = salesForceService.getSalesForceInfoList(index, pageSize, type);
+					}
+				} catch (Exception e) {
+					flag++;
+					logger.warn("This thread: " + Thread.currentThread().getName() + " get SalesForce data failed!", e);
+					logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
+					continue;
 				}
 
 
@@ -101,7 +109,7 @@ public class SyncApolloDataWorkThread implements Runnable{
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
 					}
 				} catch (Exception e) {
-					logger.info("SalesForce data incomplete");
+					logger.info("This thread: " + Thread.currentThread().getName() + "SalesForce data incomplete");
 					flag++;
 					continue;
 				}
@@ -150,7 +158,7 @@ public class SyncApolloDataWorkThread implements Runnable{
 				flag = 0;
 			} catch (Exception e) {
 				flag++;
-				logger.warn("something error", e);
+				logger.warn("This thread: " + Thread.currentThread().getName() + "Sql runs failed!", e);
 			}
 			if (type.equals("all"))
 				logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
@@ -186,7 +194,7 @@ public class SyncApolloDataWorkThread implements Runnable{
 	}
 
 	public void insertUserShopRightData(Map<String, String> shopUserMap) {
-		if(shopUserMap.size() == 0)
+		if (shopUserMap.size() == 0)
 			return;
 
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
@@ -242,7 +250,7 @@ public class SyncApolloDataWorkThread implements Runnable{
 	}
 
 	public void insertShopTerritoryRightData(Map<String, Set<String>> shopTerritoryMap, Map<String, String> shopExternalMap) {
-		if(shopTerritoryMap.size() == 0 || shopExternalMap.size() == 0)
+		if (shopTerritoryMap.size() == 0 || shopExternalMap.size() == 0)
 			return;
 
 		List<ShopTerritory> newShopTerritoryList = Lists.newArrayList();
