@@ -7,6 +7,7 @@ import com.dianping.customer.tool.entity.ShopTerritory;
 import com.dianping.customer.tool.entity.ShopTerritoryHistory;
 import com.dianping.customer.tool.entity.UserShopHistory;
 import com.dianping.customer.tool.entity.UserShopTerritory;
+import com.dianping.customer.tool.exception.SalesForceException;
 import com.dianping.customer.tool.job.dao.ShopTerritoryHistoryDao;
 import com.dianping.customer.tool.job.dao.UserShopHistoryDao;
 import com.dianping.customer.tool.service.SalesForceService;
@@ -84,7 +85,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 					} else {
 						salesForceInfoList = salesForceService.getSalesForceInfoList(index, pageSize, type);
 					}
-				} catch (Exception e) {
+				} catch (SalesForceException e) {
 					flag++;
 					logger.warn("This thread: " + Thread.currentThread().getName() + " get SalesForce data failed!", e);
 					logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");

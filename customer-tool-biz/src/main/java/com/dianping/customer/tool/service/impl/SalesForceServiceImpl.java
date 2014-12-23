@@ -63,7 +63,7 @@ public class SalesForceServiceImpl implements SalesForceService {
 
 	@Override
 	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type) {
-		ResponseEntity<ServiceResult> response = new ResponseEntity<ServiceResult>(HttpStatus.REQUEST_TIMEOUT);
+		ResponseEntity<ServiceResult> response;
 		HttpHeaders headers = new HttpHeaders();
 		if (token == null)
 			token = salesForceOauthTokenUtil.getLoginToken();
@@ -89,6 +89,7 @@ public class SalesForceServiceImpl implements SalesForceService {
 			response = null;
 			ResponseEntity<String> s = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
 			logger.warn("This thread: " + Thread.currentThread().getName() + s.getBody());
+			logger.warn("This thread: " + Thread.currentThread().getName(), e);
 		}
 		if(response == null)
 			throw new SalesForceException("get SalesForce data failed!");

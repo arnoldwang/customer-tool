@@ -30,4 +30,8 @@ public class ConfigUtils {
 	public static int getSyncApolloDataTaskDefaultThreadPage(){
 		return PropertiesLoaderSupportUtils.getIntProperty("customer-tool-job.syncApolloDataTask.defualtThreadPage", 5100000);
 	}
+
+	public static int getSyncApolloDataTaskDefaultThreadNum() {
+		return PropertiesLoaderSupportUtils.getIntProperty("customer-tool-job.syncApolloDataTask.defualtThreadNum", 5);
+	}
 }
