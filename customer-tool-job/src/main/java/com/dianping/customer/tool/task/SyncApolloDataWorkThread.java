@@ -24,7 +24,7 @@ import java.util.*;
  */
 @Component
 public class SyncApolloDataWorkThread implements Runnable {
-	private static final int DEFAULT_SIZE = 10000;
+	private static final int DEFAULT_SIZE = 5000;
 	private static final int DEFAULT_INDEX = 1;
 
 	String type;
