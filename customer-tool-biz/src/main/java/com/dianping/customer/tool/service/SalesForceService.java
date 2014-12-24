@@ -2,8 +2,8 @@ package com.dianping.customer.tool.service;
 
 import com.dianping.customer.tool.model.ServiceResult;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: zhenwei.wang
@@ -13,7 +13,7 @@ public interface SalesForceService {
 
 	public ServiceResult getSfShopInfo(String shopId);
 
-	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type);
+	public List<Map<String, Object>> getSalesForceInfoList(int begin, int end, String type);
 
 	public ServiceResult getSfUserTerritoryInfo(String loginId);
 

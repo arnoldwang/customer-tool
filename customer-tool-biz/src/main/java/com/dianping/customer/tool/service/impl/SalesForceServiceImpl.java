@@ -1,11 +1,15 @@
 package com.dianping.customer.tool.service.impl;
 
+import com.beust.jcommander.internal.Lists;
+import com.beust.jcommander.internal.Maps;
 import com.dianping.customer.tool.exception.SalesForceException;
 import com.dianping.customer.tool.model.ServiceResult;
 import com.dianping.customer.tool.service.SalesForceService;
 import com.dianping.customer.tool.utils.ConfigUtils;
 import com.dianping.customer.tool.utils.SalesForceOauthTokenUtil;
-import com.google.common.collect.Maps;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +17,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: zhenwei.wang
@@ -62,8 +68,9 @@ public class SalesForceServiceImpl implements SalesForceService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> getSalesForceInfoList(int begin, int end, String type) {
-		ResponseEntity<ServiceResult> response;
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getSalesForceInfoList(int begin, int end, String type) {
+
 		HttpHeaders headers = new HttpHeaders();
 		if (token == null)
 			token = salesForceOauthTokenUtil.getLoginToken();
@@ -83,27 +90,25 @@ public class SalesForceServiceImpl implements SalesForceService {
 		if (type.equals("increment")) {
 			url = smtShopInfoListURL + "?type=increment&index={begin}&pageSize={end}";
 		}
-		try {
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
-		} catch (Exception e) {
-			response = null;
-			ResponseEntity<String> s = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
-			logger.warn("This thread: " + Thread.currentThread().getName() + s.getBody());
-			logger.warn("This thread: " + Thread.currentThread().getName(), e);
-		}
-		if(response == null)
-			throw new SalesForceException("get SalesForce data failed!");
+		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
 		if (response.getStatusCode().value() == 401) {
 			token = salesForceOauthTokenUtil.getLoginToken();
 			headers.set("Authorization", "Bearer " + token);
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
 		}
 
-		if (response.getBody().getCode() == 500) {
-			logger.warn("This thread: " + Thread.currentThread().getName() + " has error!" + response.getBody().getMsg().toString());
+		List<Map<String, Object>> shopList;
+		try {
+			JSONObject json = new JSONObject(response.getBody());
+			Map<String, Object> rs = jsonToMap(json);
+			shopList = ((Map<String, List<Map<String, Object>>>) rs.get("msg")).get("shopList");
+		} catch (Exception e) {
+//			logger.warn("This thread: " + Thread.currentThread().getName() + response.getBody());
+			logger.warn("This thread: " + Thread.currentThread().getName(), e);
+			throw new SalesForceException("get SalesForce data failed!");
 		}
 
-		return ((LinkedHashMap<String, ArrayList<HashMap<String, Object>>>) response.getBody().getMsg()).get("shopList");
+		return shopList;
 	}
 
 	@Override
@@ -130,6 +135,7 @@ public class SalesForceServiceImpl implements SalesForceService {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public int getSfMaxShopId() {
 		ResponseEntity<ServiceResult> response = new ResponseEntity<ServiceResult>(HttpStatus.REQUEST_TIMEOUT);
 		try {
@@ -161,5 +167,46 @@ public class SalesForceServiceImpl implements SalesForceService {
 
 	public void setSmtShopInfoListURL(String smtShopInfoListURL) {
 		this.smtShopInfoListURL = smtShopInfoListURL;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> jsonToMap(JSONObject jsonObj) {
+		Map<String, Object> jsonMap = Maps.newHashMap();
+		Iterator<String> jsonKeys = jsonObj.keys();
+		try {
+			while (jsonKeys.hasNext()) {
+				String jsonKey = jsonKeys.next();
+				Object jsonValObj = jsonObj.get(jsonKey);
+				if (jsonValObj instanceof JSONArray) {
+					jsonMap.put(jsonKey, jsonToList((JSONArray) jsonValObj));
+				} else if (jsonValObj instanceof JSONObject) {
+					jsonMap.put(jsonKey, jsonToMap((JSONObject) jsonValObj));
+				} else {
+					jsonMap.put(jsonKey, jsonValObj);
+				}
+			}
+		} catch (JSONException e) {
+			//do nothing
+		}
+		return jsonMap;
+	}
+
+	private List<?> jsonToList(JSONArray jsonArr) {
+		List<Object> jsonList = Lists.newArrayList();
+		try {
+			for (int i = 0; i < jsonArr.length(); i++) {
+				Object object = jsonArr.get(i);
+				if (object instanceof JSONArray) {
+					jsonList.add(jsonToList((JSONArray) object));
+				} else if (object instanceof JSONObject) {
+					jsonList.add(jsonToMap((JSONObject) object));
+				} else {
+					jsonList.add(object);
+				}
+			}
+		} catch (JSONException e) {
+			//do nothing
+		}
+		return jsonList;
 	}
 }

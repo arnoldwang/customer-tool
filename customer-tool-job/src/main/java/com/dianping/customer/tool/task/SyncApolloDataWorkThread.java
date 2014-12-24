@@ -61,6 +61,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 		logger.info("This thread: " + Thread.currentThread().getName() + " end!");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
 		int begin = threadBegin;
 		int end = begin + DEFAULT_SIZE;
@@ -76,7 +77,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 					return;
 				}
 
-				List<HashMap<String, Object>> salesForceInfoList;
+				List<Map<String, Object>> salesForceInfoList;
 				try {
 					if (type.equals("all")) {
 						salesForceInfoList = salesForceService.getSalesForceInfoList(begin, end, type);
@@ -104,9 +105,9 @@ public class SyncApolloDataWorkThread implements Runnable {
 				Map<String, String> shopExternalMap = new HashMap<String, String>();
 
 				try {
-					for (HashMap<String, Object> sfInfo : salesForceInfoList) {
+					for (Map<String, Object> sfInfo : salesForceInfoList) {
 						shopUserMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("ownerLoginId"));
-						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((LinkedHashMap<String, String>) sfInfo.get("territoryId2Name")).keySet());
+						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((Map<String, String>) sfInfo.get("territoryId2Name")).keySet());
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
 					}
 				} catch (Exception e) {
