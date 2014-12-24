@@ -89,7 +89,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				} catch (SalesForceException e) {
 					flag++;
 					logger.warn("This thread: " + Thread.currentThread().getName() + " get SalesForce data failed!", e);
-					logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
+					logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data failed!");
 					continue;
 				}
 
@@ -202,9 +202,11 @@ public class SyncApolloDataWorkThread implements Runnable {
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
 		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
-			if (entry.getValue().equals("-38178")) {
+			if(entry.getValue() == null)
 				continue;
-			}
+			if (entry.getValue().equals("-38178"))
+				continue;
+
 			UserShopTerritory userShopTerritory = new UserShopTerritory();
 			userShopTerritory.setUserID(Integer.valueOf(entry.getValue()));
 			userShopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
@@ -259,6 +261,8 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 		for (Map.Entry<String, Set<String>> entry : shopTerritoryMap.entrySet()) {
 			for (String territoryID : entry.getValue()) {
+				if(territoryID == null)
+					continue;
 				ShopTerritory shopTerritory = new ShopTerritory();
 				shopTerritory.setExternalID(shopExternalMap.get(entry.getKey()) + "-" + territoryID);
 				shopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
