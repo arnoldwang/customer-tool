@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>com.salesforce</groupId>
                 <artifactId>dataloader</artifactId>
-                <version>33.0.0</version>
+                <version>32.0.0</version>
             </dependency>
             <!-- beginning of dp common -->
             <dependency>
