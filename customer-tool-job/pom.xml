@@ -303,5 +303,21 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--salesforce.dataloader-->
+        <dependency>
+            <groupId>com.salesforce</groupId>
+            <artifactId>dataloader</artifactId>
+            <version>26.0.0-uber</version>
+            <scope>system</scope>
+            <systemPath>/Users/zaza/Downloads/dataloader-26.0.0-uber.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.5</version>
+        </dependency>
+
     </dependencies>
 </project>
