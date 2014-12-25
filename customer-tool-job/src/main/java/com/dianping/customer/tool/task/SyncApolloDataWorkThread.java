@@ -7,6 +7,7 @@ import com.dianping.customer.tool.entity.ShopTerritory;
 import com.dianping.customer.tool.entity.ShopTerritoryHistory;
 import com.dianping.customer.tool.entity.UserShopHistory;
 import com.dianping.customer.tool.entity.UserShopTerritory;
+import com.dianping.customer.tool.exception.SalesForceException;
 import com.dianping.customer.tool.job.dao.ShopTerritoryHistoryDao;
 import com.dianping.customer.tool.job.dao.UserShopHistoryDao;
 import com.dianping.customer.tool.service.SalesForceService;
@@ -24,7 +25,7 @@ import java.util.*;
  */
 @Component
 public class SyncApolloDataWorkThread implements Runnable {
-	private static final int DEFAULT_SIZE = 10000;
+	private static final int DEFAULT_SIZE = 5000;
 	private static final int DEFAULT_INDEX = 1;
 
 	String type;
@@ -60,6 +61,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 		logger.info("This thread: " + Thread.currentThread().getName() + " end!");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
 		int begin = threadBegin;
 		int end = begin + DEFAULT_SIZE;
@@ -75,7 +77,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 					return;
 				}
 
-				List<HashMap<String, Object>> salesForceInfoList;
+				List<Map<String, Object>> salesForceInfoList;
 				try {
 					if (type.equals("all")) {
 						salesForceInfoList = salesForceService.getSalesForceInfoList(begin, end, type);
@@ -84,10 +86,10 @@ public class SyncApolloDataWorkThread implements Runnable {
 					} else {
 						salesForceInfoList = salesForceService.getSalesForceInfoList(index, pageSize, type);
 					}
-				} catch (Exception e) {
+				} catch (SalesForceException e) {
 					flag++;
 					logger.warn("This thread: " + Thread.currentThread().getName() + " get SalesForce data failed!", e);
-					logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
+					logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data failed!");
 					continue;
 				}
 
@@ -103,9 +105,9 @@ public class SyncApolloDataWorkThread implements Runnable {
 				Map<String, String> shopExternalMap = new HashMap<String, String>();
 
 				try {
-					for (HashMap<String, Object> sfInfo : salesForceInfoList) {
+					for (Map<String, Object> sfInfo : salesForceInfoList) {
 						shopUserMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("ownerLoginId"));
-						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((LinkedHashMap<String, String>) sfInfo.get("territoryId2Name")).keySet());
+						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((Map<String, String>) sfInfo.get("territoryId2Name")).keySet());
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
 					}
 				} catch (Exception e) {
@@ -200,9 +202,11 @@ public class SyncApolloDataWorkThread implements Runnable {
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
 		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
-			if (entry.getValue().equals("-38178")) {
+			if(entry.getValue() == null)
 				continue;
-			}
+			if (entry.getValue().equals("-38178"))
+				continue;
+
 			UserShopTerritory userShopTerritory = new UserShopTerritory();
 			userShopTerritory.setUserID(Integer.valueOf(entry.getValue()));
 			userShopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
@@ -257,6 +261,8 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 		for (Map.Entry<String, Set<String>> entry : shopTerritoryMap.entrySet()) {
 			for (String territoryID : entry.getValue()) {
+				if(territoryID == null)
+					continue;
 				ShopTerritory shopTerritory = new ShopTerritory();
 				shopTerritory.setExternalID(shopExternalMap.get(entry.getKey()) + "-" + territoryID);
 				shopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));

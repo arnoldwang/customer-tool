@@ -19,7 +19,6 @@ import java.util.concurrent.Future;
 public class SyncApolloDataTask {
 	private static final int DEFAULT_INDEX = 1;
 
-	private static final int DEFAULT_THREAD_NUM = 5;
 
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataTask.class);
 
@@ -31,24 +30,25 @@ public class SyncApolloDataTask {
 		}
 
 		String type = ConfigUtils.getSyncApolloDataTaskType();
-		int threadShopNum = ConfigUtils.getSyncApolloDataTaskDefaultThreadPage();
-		System.out.println("+++++++++++++++++++++++++++++++threadShopNum = " + threadShopNum);
+		int threadPage = ConfigUtils.getSyncApolloDataTaskDefaultThreadPage();
+		int threadNum = ConfigUtils.getSyncApolloDataTaskDefaultThreadNum();
+		System.out.println("+++++++++++++++++++++++++++++++threadShopNum = " + threadPage);
 
-		ExecutorService exe = Executors.newFixedThreadPool(DEFAULT_THREAD_NUM);
+		ExecutorService exe = Executors.newFixedThreadPool(threadNum);
 		List<Future> futureList = Lists.newArrayList();
 
 		logger.info("SyncApolloDataTask.running...");
 		System.out.println("SyncApolloDataTask.running...");
 		long beginTime = System.currentTimeMillis();
 
-		for(int i = 0; i < DEFAULT_THREAD_NUM; i++){
-			Runnable r = new SyncApolloDataWorkThread(type, DEFAULT_INDEX + threadShopNum * i, DEFAULT_INDEX + threadShopNum * (i + 1));
+		for(int i = 0; i < threadNum; i++){
+			Runnable r = new SyncApolloDataWorkThread(type, DEFAULT_INDEX + threadPage * i, DEFAULT_INDEX + threadPage * (i + 1));
 			Beans.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(r);
 			futureList.add(exe.submit(r));
 		}
 		System.out.println("+++++++++++++++++++++++++++++++futureListNum = " + futureList.size());
 
-		for (int i = 0; i < DEFAULT_THREAD_NUM; i++){
+		for (int i = 0; i < threadNum; i++){
 			try {
 				futureList.get(i).get();
 			} catch (InterruptedException e) {

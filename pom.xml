@@ -21,7 +21,7 @@
 
     <properties>
         <project.version.api>1.0.4-SNAPSHOT</project.version.api>
-        <project.version.biz>1.0.5-SNAPSHOT</project.version.biz>
+        <project.version.biz>1.0.4-SNAPSHOT</project.version.biz>
         <project.version.job>1.0.4-SNAPSHOT</project.version.job>
         <project.version.service>1.0.4-SNAPSHOT</project.version.service>
         <project.version.mq>1.0.4-SNAPSHOT</project.version.mq>
