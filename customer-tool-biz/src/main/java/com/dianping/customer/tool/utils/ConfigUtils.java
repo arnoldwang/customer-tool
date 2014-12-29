@@ -34,4 +34,8 @@ public class ConfigUtils {
 	public static int getSyncApolloDataTaskDefaultThreadNum() {
 		return PropertiesLoaderSupportUtils.getIntProperty("customer-tool-job.syncApolloDataTask.defualtThreadNum", 5);
 	}
+
+	public static boolean getSyncUserTeriitoryTaskTrigger() {
+		return PropertiesLoaderSupportUtils.getBoolProperty("customer-tool-job.syncUserTerritoryTaskTrigger", true);
+	}
 }
