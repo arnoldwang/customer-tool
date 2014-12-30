@@ -2,6 +2,7 @@ package com.dianping.customer.tool.task;
 
 import com.beust.jcommander.internal.Lists;
 import com.beust.jcommander.internal.Maps;
+import com.beust.jcommander.internal.Sets;
 import com.dianping.customer.tool.utils.ConfigUtils;
 import com.salesforce.dataloader.client.PartnerClient;
 import com.salesforce.dataloader.config.Config;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: zhenwei.wang
@@ -82,20 +84,20 @@ public class SyncUserTerritoryTask {
 			return;
 
 		PartnerClient client = controller.getPartnerClient();
-		QueryResult et_qr = null;
-		while (et_qr == null && flag < 100) {
+		QueryResult user_qr = null;
+		while (user_qr == null && flag < 100) {
 			try {
-				et_qr = client.query("select TerritoryID__c,UserID__c from EmployeeTerritory__c");
+				user_qr = client.query("select UserID__c from EmployeeTerritory__c");
 			} catch (ConnectionException e) {
 				logger.warn("can not get EmployeeTerritory__c data!", e);
 				flag++;
 			}
 		}
-		if (et_qr == null || et_qr.getSize() == 0) {
+		if (user_qr == null || user_qr.getSize() == 0) {
 			logger.warn("EmployeeTerritory__c has no data!");
 			return;
 		}
-		SObject[] et_results = et_qr.getRecords();
+		SObject[] user_results = user_qr.getRecords();
 
 		BasicDynaClass dynaClass = null;
 		while (dynaClass == null && flag < 100)
@@ -108,84 +110,112 @@ public class SyncUserTerritoryTask {
 		if (dynaClass == null)
 			return;
 
-		for (SObject et_Object : et_results) {
+		Set<String> userIDs = Sets.newHashSet();
+		for (SObject user_Object : user_results) {
+			Iterator<XmlObject> user_iter = user_Object.getChildren();
+			while (user_iter.hasNext()) {
+				XmlObject xmlObject = user_iter.next();
+				if (xmlObject.getName().getLocalPart().equals("UserID__c"))
+					userIDs.add((String) xmlObject.getValue());
+			}
+		}
+
+		for (String userID : userIDs) {
 			List<DynaBean> deleteList = Lists.newArrayList();
 			List<DynaBean> insertList = Lists.newArrayList();
 			Map<String, Object> userTerritoryMap = Maps.newHashMap();
-			Iterator<XmlObject> et_iter = et_Object.getChildren();
-			while (et_iter.hasNext()) {
-				XmlObject xmlObject = et_iter.next();
-				if (xmlObject.getName().getLocalPart().equals("TerritoryID__c"))
-					userTerritoryMap.put("TerritoryId", xmlObject.getValue());
-				if (xmlObject.getName().getLocalPart().equals("UserID__c"))
-					userTerritoryMap.put("UserId", xmlObject.getValue());
-			}
+			userTerritoryMap.put("UserId", userID);
 
-			if (userTerritoryMap.containsKey("UserId")) {
+			QueryResult et_qr = null;
+			while (et_qr == null && flag < 100) {
 				try {
-					DynaBean insertObject = dynaClass.newInstance();
-					BeanUtils.copyProperties(insertObject, userTerritoryMap);
-					insertList.add(insertObject);
-				} catch (Exception e) {
-					logger.warn("convert object failed!", e);
-				}
-
-				QueryResult ut_qr = null;
-				while (ut_qr == null && flag < 100) {
-					try {
-						ut_qr = client.query("select Id,TerritoryId,UserId from UserTerritory where UserId='" + userTerritoryMap.get("UserId") + "'");
-					} catch (ConnectionException e) {
-						logger.warn("can not get UserTerritory data!", e);
-						flag++;
-					}
-				}
-				if(ut_qr == null)
-					return;
-
-				SObject[] ut_results = ut_qr.getRecords();
-				if (ut_results.length > 0) {//UserId已存在与UserTerritory表中，先删除再插入
-					for (SObject ut_object : ut_results) {
-						Iterator<XmlObject> ut_iter = ut_object.getChildren();
-						while (ut_iter.hasNext()) {
-							XmlObject xmlObject = ut_iter.next();
-							if (xmlObject.getName().getLocalPart().equals("Id")) {
-								userTerritoryMap.put("Id", xmlObject.getValue());
-								try {
-									DynaBean deleteObject = dynaClass.newInstance();
-									BeanUtils.copyProperties(deleteObject, userTerritoryMap);
-									deleteList.add(deleteObject);
-								} catch (Exception e) {
-									logger.warn("convert object failed!", e);
-								}
-								break;
-							}
-						}
-					}
-					DeleteResult[] deleteResults = new DeleteResult[0];
-					try {
-						deleteResults = client.loadDeletes(deleteList);
-					} catch (ConnectionException e) {
-						logger.warn("delete data failed!", e);
-					}
-					for (DeleteResult result : deleteResults) {
-						if (!result.getSuccess()) {
-							logger.warn("ID: "+result.getId() + " has not been deleted!");
-						}
-					}
-				}
-				//UserId不在UserTerritory表中，直接插入
-				SaveResult[] insertResults = new SaveResult[0];
-				try {
-					insertResults = client.loadInserts(insertList);
+					et_qr = client.query("select TerritoryID__c from EmployeeTerritory__c where UserID__c='" + userTerritoryMap.get("UserId") + "' order by CreatedDate desc limit 1");
 				} catch (ConnectionException e) {
-					logger.warn("insert data failed!", e);
+					logger.warn("can not get EmployeeTerritory__c data!", e);
+					flag++;
 				}
-				for (SaveResult result : insertResults) {
+			}
+
+			if (et_qr == null)
+				return;
+
+			SObject[] et_results = et_qr.getRecords();
+			if (et_results.length > 0) {
+				Iterator<XmlObject> et_iter = et_results[0].getChildren();
+				while (et_iter.hasNext()) {
+					XmlObject xmlObject = et_iter.next();
+					if (xmlObject.getName().getLocalPart().equals("TerritoryID__c"))
+						userTerritoryMap.put("TerritoryId", xmlObject.getValue());
+				}
+			}
+			try {
+				DynaBean insertObject = dynaClass.newInstance();
+				BeanUtils.copyProperties(insertObject, userTerritoryMap);
+				insertList.add(insertObject);
+			} catch (Exception e) {
+				logger.warn("convert object failed!", e);
+			}
+
+			QueryResult ut_qr = null;
+			while (ut_qr == null && flag < 100) {
+				try {
+					ut_qr = client.query("select Id from UserTerritory where UserId='" + userTerritoryMap.get("UserId") + "'");
+				} catch (ConnectionException e) {
+					logger.warn("can not get UserTerritory data!", e);
+					flag++;
+				}
+			}
+			if (ut_qr == null)
+				return;
+
+			SObject[] ut_results = ut_qr.getRecords();
+			if (ut_results.length > 0) {//UserId已存在与UserTerritory表中，先删除再插入
+				for (SObject ut_object : ut_results) {
+					Iterator<XmlObject> ut_iter = ut_object.getChildren();
+					while (ut_iter.hasNext()) {
+						XmlObject xmlObject = ut_iter.next();
+						if (xmlObject.getName().getLocalPart().equals("Id")) {
+							userTerritoryMap.put("Id", xmlObject.getValue());
+							try {
+								DynaBean deleteObject = dynaClass.newInstance();
+								BeanUtils.copyProperties(deleteObject, userTerritoryMap);
+								deleteList.add(deleteObject);
+							} catch (Exception e) {
+								logger.warn("convert object failed!", e);
+							}
+							break;
+						}
+					}
+				}
+				DeleteResult[] deleteResults = new DeleteResult[0];
+				try {
+					deleteResults = client.loadDeletes(deleteList);
+				} catch (ConnectionException e) {
+					logger.warn("delete data failed!", e);
+				}
+				for (DeleteResult result : deleteResults) {
+					if (result.getSuccess())
+						logger.info("ID: " + result.getId() + " has been deleted!");
 					if (!result.getSuccess()) {
-						logger.warn("ID: "+result.getId() + " has not been inserted!");
+						logger.warn("ID: " + result.getId() + " has not been deleted!");
 					}
 				}
 			}
+			//UserId不在UserTerritory表中，直接插入
+			SaveResult[] insertResults = new SaveResult[0];
+			try {
+				insertResults = client.loadInserts(insertList);
+			} catch (ConnectionException e) {
+				logger.warn("insert data failed!", e);
+			}
+			for (SaveResult result : insertResults) {
+				if (result.getSuccess())
+					logger.info("ID: " + result.getId() + " has been inserted!");
+				if (!result.getSuccess()) {
+					logger.warn("ID: " + result.getId() + " has not been inserted!");
+				}
+			}
+
 		}
 	}
 
