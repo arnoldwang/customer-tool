@@ -44,7 +44,6 @@ public class SyncUserTerritoryTask {
 		}
 
 		try {
-//			System.setProperty("appdata.dir", "/data");
 			controller = Controller.getInstance("ui", false);
 		} catch (ControllerInitializationException e) {
 			logger.warn("controller init failed! Task will not run!", e);
