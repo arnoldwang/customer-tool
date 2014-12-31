@@ -67,9 +67,9 @@ public class SyncUserTerritoryTask {
 	private void syncUserTerritoryData() {
 
 		Config config = controller.getConfig();
-		config.putValue("sfdc.username", "huagui.zhang123@dianping.com.dpstg");
-		config.putValue("sfdc.password", "zhang@123456");
-		config.putValue("sfdc.endpoint", "https://dper--dpstg.cs6.my.salesforce.com/");
+		config.putValue("sfdc.username", "siqin.liu@dianping.com");
+		config.putValue("sfdc.password", "DpCRM1234");
+		config.putValue("sfdc.endpoint", "https://dper.my.salesforce.com");
 
 		int flag = 0;
 		while (!controller.isLoggedIn() && flag < 100) {
@@ -84,10 +84,12 @@ public class SyncUserTerritoryTask {
 			return;
 
 		PartnerClient client = controller.getPartnerClient();
+		client.getClient().setQueryOptions(2000);//设置query返回records值为2000
 		QueryResult user_qr = null;
+		boolean done = false;
 		while (user_qr == null && flag < 100) {
 			try {
-				user_qr = client.query("select UserID__c from EmployeeTerritory__c");
+				user_qr = client.query("select UserID__c from EmployeeTerritory__c limit 50000");
 			} catch (ConnectionException e) {
 				logger.warn("can not get EmployeeTerritory__c data!", e);
 				flag++;
@@ -97,8 +99,29 @@ public class SyncUserTerritoryTask {
 			logger.warn("EmployeeTerritory__c has no data!");
 			return;
 		}
-		SObject[] user_results = user_qr.getRecords();
 
+		Set<String> userIDs = Sets.newHashSet();
+
+		while (!done) {
+			SObject[] user_results = user_qr.getRecords();
+			for (SObject user_Object : user_results) {
+				Iterator<XmlObject> user_iter = user_Object.getChildren();
+				while (user_iter.hasNext()) {
+					XmlObject xmlObject = user_iter.next();
+					if (xmlObject.getName().getLocalPart().equals("UserID__c"))
+						userIDs.add((String) xmlObject.getValue());
+				}
+			}
+			if (user_qr.isDone()) {
+				done = true;
+			} else {
+				try {
+					user_qr = client.queryMore(user_qr.getQueryLocator());
+				} catch (ConnectionException e) {
+					logger.warn("can not get EmployeeTerritory__c data!", e);
+				}
+			}
+		}
 		BasicDynaClass dynaClass = null;
 		while (dynaClass == null && flag < 100)
 			try {
@@ -109,16 +132,6 @@ public class SyncUserTerritoryTask {
 			}
 		if (dynaClass == null)
 			return;
-
-		Set<String> userIDs = Sets.newHashSet();
-		for (SObject user_Object : user_results) {
-			Iterator<XmlObject> user_iter = user_Object.getChildren();
-			while (user_iter.hasNext()) {
-				XmlObject xmlObject = user_iter.next();
-				if (xmlObject.getName().getLocalPart().equals("UserID__c"))
-					userIDs.add((String) xmlObject.getValue());
-			}
-		}
 
 		for (String userID : userIDs) {
 			List<DynaBean> deleteList = Lists.newArrayList();
@@ -193,11 +206,15 @@ public class SyncUserTerritoryTask {
 				} catch (ConnectionException e) {
 					logger.warn("delete data failed!", e);
 				}
-				for (DeleteResult result : deleteResults) {
+				for (int i = 0; i < deleteResults.length; i++) {
+					DeleteResult result = deleteResults[i];
 					if (result.getSuccess())
-						logger.info("ID: " + result.getId() + " has been deleted!");
+						logger.info("ID: " + result.getId() + " UserID: " + deleteList.get(i).get("UserId")
+								+ " TerritoryID: " + deleteList.get(i).get("TerritoryId") + " has been deleted!");
+
 					if (!result.getSuccess()) {
-						logger.warn("ID: " + result.getId() + " has not been deleted!");
+						logger.warn("ID: " + result.getId() + " UserID: " + deleteList.get(i).get("UserId")
+								+ " TerritoryID: " + deleteList.get(i).get("TerritoryId") + " has not been deleted!");
 					}
 				}
 			}
@@ -208,11 +225,14 @@ public class SyncUserTerritoryTask {
 			} catch (ConnectionException e) {
 				logger.warn("insert data failed!", e);
 			}
-			for (SaveResult result : insertResults) {
+			for (int i = 0; i < insertResults.length; i++) {
+				SaveResult result = insertResults[i];
 				if (result.getSuccess())
-					logger.info("ID: " + result.getId() + " has been inserted!");
+					logger.info("ID: " + result.getId() + " UserID: " + insertList.get(i).get("UserId")
+							+ " TerritoryID: " + insertList.get(i).get("TerritoryId") + " has been inserted!");
 				if (!result.getSuccess()) {
-					logger.warn("ID: " + result.getId() + " has not been inserted!");
+					logger.warn("ID: " + result.getId() + " UserID: " + insertList.get(i).get("UserId")
+							+ " TerritoryID: " + insertList.get(i).get("TerritoryId") + " has not been inserted!");
 				}
 			}
 
