@@ -305,13 +305,13 @@
         </dependency>
 
         <!--salesforce.dataloader-->
-        <dependency>
-            <groupId>com.salesforce</groupId>
-            <artifactId>dataloader</artifactId>
-            <version>32.0.0-uber</version>
-            <scope>system</scope>
-            <systemPath>src/main/webapp/WEB-INF/lib/zdataloader-32.0.0-uber.jar</systemPath>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.salesforce</groupId>-->
+            <!--<artifactId>dataloader</artifactId>-->
+            <!--<version>32.0.0-uber</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>src/main/webapp/WEB-INF/lib/zdataloader-32.0.0-uber.jar</systemPath>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
