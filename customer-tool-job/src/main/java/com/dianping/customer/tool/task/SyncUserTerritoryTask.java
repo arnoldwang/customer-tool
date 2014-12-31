@@ -67,9 +67,14 @@ public class SyncUserTerritoryTask {
 	private void syncUserTerritoryData() {
 
 		Config config = controller.getConfig();
-		config.putValue("sfdc.username", "siqin.liu@dianping.com");
-		config.putValue("sfdc.password", "DpCRM1234");
-		config.putValue("sfdc.endpoint", "https://dper.my.salesforce.com");
+		//online
+//		config.putValue("sfdc.username", "siqin.liu@dianping.com");
+//		config.putValue("sfdc.password", "DpCRM1234");
+//		config.putValue("sfdc.endpoint", "https://dper.my.salesforce.com");
+		//beta
+		config.putValue("sfdc.username", "huagui.zhang123@dianping.com.dpstg");
+		config.putValue("sfdc.password", "zhang@123456");
+		config.putValue("sfdc.endpoint", "https://dper--dpstg.cs6.my.salesforce.com/");
 
 		int flag = 0;
 		while (!controller.isLoggedIn() && flag < 100) {
