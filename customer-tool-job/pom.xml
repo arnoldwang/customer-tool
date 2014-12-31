@@ -308,9 +308,9 @@
         <dependency>
             <groupId>com.salesforce</groupId>
             <artifactId>dataloader</artifactId>
-            <version>26.0.0-uber</version>
+            <version>32.0.0-uber</version>
             <scope>system</scope>
-            <systemPath>/Users/zaza/Downloads/dataloader-26.0.0-uber.jar</systemPath>
+            <systemPath>${project.basedir}\src\main\webapp\WEB-INF\lib\zdataloader-32.0.0-uber.jar</systemPath>
         </dependency>
 
         <dependency>

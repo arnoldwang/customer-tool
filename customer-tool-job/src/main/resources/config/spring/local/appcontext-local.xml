@@ -6,9 +6,12 @@
     <context:component-scan base-package="com.dianping"/>
     <context:annotation-config/>
 
-    <bean id="syncApolloDataTask" class="com.dianping.customer.tool.task.SyncApolloDataTask" />
+    <bean id="syncApolloDataTask" class="com.dianping.customer.tool.task.SyncApolloDataTask"/>
 
-    <bean id="syncAplloDataWorkThread" class="com.dianping.customer.tool.task.SyncApolloDataWorkThread" scope="prototype"/>
+    <bean id="syncAplloDataWorkThread" class="com.dianping.customer.tool.task.SyncApolloDataWorkThread"
+          scope="prototype"/>
+
+    <bean id="syncUserTerritoryTask" class="com.dianping.customer.tool.task.SyncUserTerritoryTask"/>
 
     <!--同步SalesForce与Apollo中UserShopTerritory数据的定时器-->
     <bean id="syncApolloDataTaskJob"
@@ -18,20 +21,37 @@
         <property name="concurrent" value="false"/>
     </bean>
 
-    <bean id="syncApolloDataExtCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="syncApolloDataExtCronTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="syncApolloDataTaskJob"/>
         <property name="cronExpression" value="${customer-tool-job.sync.apollo.data.quartz.expression}"/>
+    </bean>
+
+    <!--同步EmployeeTerritory与UserTerritory数据的定时器-->
+    <bean id="syncUserTerritoryTaskJob"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="syncUserTerritoryTask"/>
+        <property name="targetMethod" value="go"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="syncUserTerritoryExtCronTrigger"
+          class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="syncUserTerritoryTaskJob"/>
+        <property name="cronExpression" value="${customer-tool-job.sync.userTerritory.data.quartz.expression}"/>
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="jobDetails">
             <list>
                 <ref bean="syncApolloDataTaskJob"/>
+                <ref bean="syncUserTerritoryTaskJob"/>
             </list>
         </property>
         <property name="triggers">
             <list>
                 <ref bean="syncApolloDataExtCronTrigger"/>
+                <ref bean="syncUserTerritoryExtCronTrigger"/>
             </list>
         </property>
     </bean>
