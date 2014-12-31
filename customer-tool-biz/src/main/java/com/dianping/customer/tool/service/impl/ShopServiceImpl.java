@@ -45,6 +45,7 @@ public class ShopServiceImpl implements ShopService {
 	private SalesForceService salesForceService;
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public ShopInfoModel getShopAndUserInfo(String shopId, String userId) {
 		if (!shopId.equals("") && !isNumber(shopId))
 			throw new BizException("您输入的ShopId不合法，请输入正确Id!");
@@ -103,6 +104,7 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public ShopInfoModel updateShopTerritoryInfo(String shopId) {
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> msg = (HashMap<String, Object>) salesForceService.getSfShopInfo(shopId).getMsg();
@@ -130,6 +132,7 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public ShopInfoModel updateUserShopInfo(String shopId) {
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> msg = (HashMap<String, Object>) salesForceService.getSfShopInfo(shopId).getMsg();
@@ -152,6 +155,7 @@ public class ShopServiceImpl implements ShopService {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public ShopInfoModel updateOrgTerritoryInfo(String userId) {
 		ShopInfoModel shopInfoModel = new ShopInfoModel();
 		Map<String, Object> userMsg = (HashMap<String, Object>) salesForceService.getSfUserTerritoryInfo(userId).getMsg();
