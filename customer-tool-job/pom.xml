@@ -306,11 +306,9 @@
 
         <!--salesforce.dataloader-->
         <dependency>
-            <groupId>com.salesforce</groupId>
-            <artifactId>dataloader</artifactId>
+            <groupId>zcom.salesforce</groupId>
+            <artifactId>zdataloader</artifactId>
             <version>32.0.0-uber</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/zdataloader-32.0.0.jar</systemPath>
         </dependency>
 
         <dependency>
