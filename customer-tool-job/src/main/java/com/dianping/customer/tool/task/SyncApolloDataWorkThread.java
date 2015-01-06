@@ -111,7 +111,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
 					}
 				} catch (Exception e) {
-					logger.info("This thread: " + Thread.currentThread().getName() + "SalesForce data incomplete");
+					logger.info("This thread: " + Thread.currentThread().getName() + " SalesForce data incomplete");
 					flag++;
 					continue;
 				}
@@ -160,7 +160,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				flag = 0;
 			} catch (Exception e) {
 				flag++;
-				logger.warn("This thread: " + Thread.currentThread().getName() + "Sql runs failed!", e);
+				logger.warn("This thread: " + Thread.currentThread().getName() + " Sql runs failed!", e);
 			}
 			if (type.equals("all"))
 				logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
