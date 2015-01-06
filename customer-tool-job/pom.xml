@@ -305,11 +305,29 @@
         </dependency>
 
         <!--salesforce.dataloader-->
-        <!--<dependency>-->
-            <!--<groupId>zcom.salesforce</groupId>-->
-            <!--<artifactId>zdataloader</artifactId>-->
-            <!--<version>32.0.0-uber</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>zcom.salesforce</groupId>
+            <artifactId>zdataloader</artifactId>
+            <version>32.0.0-uber</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>core.commands</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>equinox.common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>jface</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.eclipse</groupId>
+                    <artifactId>swt-gtk-linux-x86_64</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
