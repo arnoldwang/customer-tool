@@ -305,11 +305,11 @@
         </dependency>
 
         <!--salesforce.dataloader-->
-        <dependency>
-            <groupId>zcom.salesforce</groupId>
-            <artifactId>zdataloader</artifactId>
-            <version>32.0.0-uber</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>zcom.salesforce</groupId>-->
+            <!--<artifactId>zdataloader</artifactId>-->
+            <!--<version>32.0.0-uber</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
