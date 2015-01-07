@@ -70,7 +70,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 		int flag = 0;
 
-		while (flag < 100 && end <= threadEnd) {
+		while (flag < 1000 && end <= threadEnd) {
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
