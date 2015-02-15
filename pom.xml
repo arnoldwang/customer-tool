@@ -58,11 +58,6 @@
                 <version>${customer-data-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dianping.dp</groupId>
-                <artifactId>data-api</artifactId>
-                <version>0.9.27</version>
-            </dependency>
-            <dependency>
                 <groupId>com.dianping.platform</groupId>
                 <artifactId>platform-sdk</artifactId>
                 <exclusions>
