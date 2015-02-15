@@ -246,7 +246,6 @@
         <dependency>
             <groupId>com.dianping.dp</groupId>
             <artifactId>data-api</artifactId>
-            <version>0.6.6</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
