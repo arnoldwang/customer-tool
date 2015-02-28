@@ -55,7 +55,13 @@ public class SalesForceServiceImpl implements SalesForceService {
 			Map<String, String> uriVariables = Maps.newHashMap();
 			uriVariables.put("shopId", shopId);
 			String url = smtShopInfoURL + "?shopId={shopId}";
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			try{
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			} catch (Exception e){
+				token = salesForceOauthTokenUtil.getLoginToken();
+				headers.set("Authorization", "Bearer " + token);
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			}
 			if (response.getStatusCode().value() == 401) {
 				token = salesForceOauthTokenUtil.getLoginToken();
 				headers.set("Authorization", "Bearer " + token);
@@ -90,7 +96,14 @@ public class SalesForceServiceImpl implements SalesForceService {
 		if (type.equals("increment")) {
 			url = smtShopInfoListURL + "?type=increment&index={begin}&pageSize={end}";
 		}
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
+		ResponseEntity<String> response = new ResponseEntity<String>(HttpStatus.REQUEST_TIMEOUT);
+		try {
+			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
+		}catch (Exception e){
+			token = salesForceOauthTokenUtil.getLoginToken();
+			headers.set("Authorization", "Bearer " + token);
+			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), String.class, uriVariables);
+		}
 		if (response.getStatusCode().value() == 401) {
 			token = salesForceOauthTokenUtil.getLoginToken();
 			headers.set("Authorization", "Bearer " + token);
@@ -122,7 +135,13 @@ public class SalesForceServiceImpl implements SalesForceService {
 			Map<String, String> uriVariables = Maps.newHashMap();
 			uriVariables.put("loginId", loginId);
 			String url = smtUserInfoURL + "?loginId={loginId}";
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			try {
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			}catch (Exception e){
+				token = salesForceOauthTokenUtil.getLoginToken();
+				headers.set("Authorization", "Bearer " + token);
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			}
 			if (response.getStatusCode().value() == 401) {
 				token = salesForceOauthTokenUtil.getLoginToken();
 				headers.set("Authorization", "Bearer " + token);
@@ -145,7 +164,13 @@ public class SalesForceServiceImpl implements SalesForceService {
 			headers.set("Authorization", "Bearer " + token);
 			Map<String, String> uriVariables = Maps.newHashMap();
 			String url = smtShopInfoListURL + "?type=maxShopId";
-			response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			try {
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			}catch (Exception e){
+				token = salesForceOauthTokenUtil.getLoginToken();
+				headers.set("Authorization", "Bearer " + token);
+				response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<byte[]>(headers), ServiceResult.class, uriVariables);
+			}
 			if (response.getStatusCode().value() == 401) {
 				token = salesForceOauthTokenUtil.getLoginToken();
 				headers.set("Authorization", "Bearer " + token);
