@@ -108,6 +108,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 				try {
 					for (Map<String, Object> sfInfo : salesForceInfoList) {
+						logger.info(sfInfo.entrySet().toString());
 						shopUserMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("ownerLoginId"));
 						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((Map<String, String>) sfInfo.get("territoryId2Name")).keySet());
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
