@@ -1,6 +1,7 @@
 package com.dianping.customer.tool.task;
 
 import com.beust.jcommander.internal.Lists;
+import com.dianping.ba.base.organizationalstructure.api.user.UserService;
 import com.dianping.customer.tool.dao.ShopTerritoryDao;
 import com.dianping.customer.tool.dao.UserShopTerritoryDao;
 import com.dianping.customer.tool.entity.ShopTerritory;
@@ -12,6 +13,7 @@ import com.dianping.customer.tool.job.dao.ShopTerritoryHistoryDao;
 import com.dianping.customer.tool.job.dao.UserShopHistoryDao;
 import com.dianping.customer.tool.service.SalesForceService;
 import com.dianping.customer.tool.utils.ConfigUtils;
+import com.dianping.salesbu.api.UserGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,10 @@ public class SyncApolloDataWorkThread implements Runnable {
 	private ShopTerritoryHistoryDao shopTerritoryHistoryDao;
 	@Autowired
 	SalesForceService salesForceService;
+	@Autowired
+	private UserGroupService userGroupService;
+	@Autowired
+	private UserService userService;
 
 	Logger logger = LoggerFactory.getLogger(SyncApolloDataWorkThread.class);
 
@@ -63,16 +69,16 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
-//		int begin = threadBegin;
-//		int end = begin + DEFAULT_SIZE;
-		int begin = 16990000;
-		int end = 16995001;
+		int begin = threadBegin;
+		int end = begin + DEFAULT_SIZE;
+//		int begin = 16990000;
+//		int end = 16995001;
 		int index = DEFAULT_INDEX;
 		int pageSize = DEFAULT_SIZE;
 
 		int flag = 0;
 
-		while (flag < 1000 && end <= 16995001) {//flag < 1000 && end <= threadEnd
+		while (flag < 1000 && end <= threadEnd) {//flag < 1000 && end <= 16995001
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -121,6 +127,13 @@ public class SyncApolloDataWorkThread implements Runnable {
 				UserShopTerritory ust;
 				for (int i = 0; i < userShopList.size(); i++) {
 					ust = userShopList.get(i);
+					if (!userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台")
+							&& !userService.queryUserByLoginID(ust.getUserID()).getRealName().contains("销售公海")){
+						userShopList.remove(i);
+						i--;
+						continue;
+					}
+
 					if (shopUserMap.get(String.valueOf(ust.getNewShopID())) == null) {
 						//Apollo中的数据，SalesForce中没有，将Apollo中的数据删除
 						continue;
@@ -160,7 +173,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				flag = 0;
 			} catch (Exception e) {
 				flag++;
-				logger.warn("This thread: " + Thread.currentThread().getName() + " Sql runs failed!", e);
+				logger.error("This thread: " + Thread.currentThread().getName() + " Sql runs failed!", e);
 			}
 			if (type.equals("all"))
 				logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
