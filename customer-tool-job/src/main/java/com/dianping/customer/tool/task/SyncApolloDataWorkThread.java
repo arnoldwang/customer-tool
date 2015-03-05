@@ -63,16 +63,16 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
-		int begin = threadBegin;
-		int end = begin + DEFAULT_SIZE;
-//		int begin = 21741771;
-//		int end = 21745686;
+//		int begin = threadBegin;
+//		int end = begin + DEFAULT_SIZE;
+		int begin = 16990000;
+		int end = 16995001;
 		int index = DEFAULT_INDEX;
 		int pageSize = DEFAULT_SIZE;
 
 		int flag = 0;
 
-		while (flag < 1000 && end <= threadEnd) {//flag < 1000 && end <= 21745686
+		while (flag < 1000 && end <= 16995001) {//flag < 1000 && end <= threadEnd
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -113,7 +113,8 @@ public class SyncApolloDataWorkThread implements Runnable {
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
 					}
 				} catch (Exception e) {
-					logger.info("This thread: " + Thread.currentThread().getName() + " SalesForce data incomplete");
+					logger.error("This thread: " + Thread.currentThread().getName() + " SalesForce data incomplete");
+					logger.error("Message:",e);
 					flag++;
 					continue;
 				}
