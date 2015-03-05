@@ -106,18 +106,14 @@ public class SyncApolloDataWorkThread implements Runnable {
 				Map<String, Set<String>> shopTerritoryMap = new HashMap<String, Set<String>>();
 				Map<String, String> shopExternalMap = new HashMap<String, String>();
 
-				try {
-					for (Map<String, Object> sfInfo : salesForceInfoList) {
-						logger.info(sfInfo.entrySet().toString());
+				for (Map<String, Object> sfInfo : salesForceInfoList) {
+					try {
 						shopUserMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("ownerLoginId"));
 						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((Map<String, String>) sfInfo.get("territoryId2Name")).keySet());
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
+					} catch (Exception e) {
+						logger.error(sfInfo.entrySet().toString(), e);
 					}
-				} catch (Exception e) {
-					logger.error("This thread: " + Thread.currentThread().getName() + " SalesForce data incomplete");
-					logger.error("Message:",e);
-					flag++;
-					continue;
 				}
 
 				List<UserShopTerritory> userShopList = userShopTerritoryDao.queryUserShopTerritoryByNewShopIDList(
@@ -206,7 +202,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
 		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
-			if(entry.getValue() == null)
+			if (entry.getValue() == null)
 				continue;
 			if (entry.getValue().equals("-38178"))
 				continue;
@@ -265,7 +261,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 		for (Map.Entry<String, Set<String>> entry : shopTerritoryMap.entrySet()) {
 			for (String territoryID : entry.getValue()) {
-				if(territoryID == null)
+				if (territoryID == null)
 					continue;
 				ShopTerritory shopTerritory = new ShopTerritory();
 				shopTerritory.setExternalID(shopExternalMap.get(entry.getKey()) + "-" + territoryID);
