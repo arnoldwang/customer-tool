@@ -128,6 +128,8 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 				logger.info("ShopUserMap before: +++++++++++++++++++++");
 				logger.info(shopUserMap.toString());
+				logger.info("shopTerritoryIDMap before: +++++++++++++++++++++");
+				logger.info(shopTerritoryIDMap.toString());
 
 				List<UserShopTerritory> userShopList = userShopTerritoryDao.queryUserShopTerritoryByNewShopIDList(
 						new ArrayList<String>(shopUserMap.keySet()));
