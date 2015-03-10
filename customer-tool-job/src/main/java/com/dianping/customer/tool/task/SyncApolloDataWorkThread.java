@@ -122,13 +122,13 @@ public class SyncApolloDataWorkThread implements Runnable {
 					}
 				}
 
-				logger.info("ShopUserMap: +++++++++++++++++++++");
+				logger.info("ShopUserMap before: +++++++++++++++++++++");
 				logger.info(shopUserMap.toString());
 
 				List<UserShopTerritory> userShopList = userShopTerritoryDao.queryUserShopTerritoryByNewShopIDList(
 						new ArrayList<String>(shopUserMap.keySet()));
 
-				logger.info("UserShopList: ++++++++++++++++++++++++");
+				logger.info("UserShopList before: ++++++++++++++++++++++++");
 				for(UserShopTerritory u : userShopList){
 					logger.info(u.getUserID() + " " + u.getNewShopID() + " " + u.getTerritoryID() + "\n");
 				}
@@ -153,6 +153,14 @@ public class SyncApolloDataWorkThread implements Runnable {
 						shopUserMap.remove(String.valueOf(ust.getNewShopID()));
 						i--;
 					}
+				}
+
+				logger.info("ShopUserMap after: +++++++++++++++++++++");
+				logger.info(shopUserMap.toString());
+
+				logger.info("UserShopList after: ++++++++++++++++++++++++");
+				for(UserShopTerritory u : userShopList){
+					logger.info(u.getUserID() + " " + u.getNewShopID() + " " + u.getTerritoryID() + "\n");
 				}
 
 				deleteUserShopWrongData(userShopList);
