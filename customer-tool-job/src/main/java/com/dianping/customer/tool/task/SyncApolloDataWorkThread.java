@@ -1,6 +1,6 @@
 package com.dianping.customer.tool.task;
 
-import com.beust.jcommander.internal.Lists;
+
 import com.dianping.ba.base.organizationalstructure.api.user.UserService;
 import com.dianping.customer.tool.dao.ShopTerritoryDao;
 import com.dianping.customer.tool.dao.UserShopTerritoryDao;
@@ -14,6 +14,8 @@ import com.dianping.customer.tool.job.dao.UserShopHistoryDao;
 import com.dianping.customer.tool.service.SalesForceService;
 import com.dianping.customer.tool.utils.ConfigUtils;
 import com.dianping.salesbu.api.UserGroupService;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,15 +110,17 @@ public class SyncApolloDataWorkThread implements Runnable {
 							" From " + (begin - DEFAULT_SIZE) + " to " + begin + " has no data!");
 					continue;
 				}
-				Map<String, String> shopUserMap = new HashMap<String, String>();
-				Map<String, Set<String>> shopTerritoryMap = new HashMap<String, Set<String>>();
-				Map<String, String> shopExternalMap = new HashMap<String, String>();
+				Map<String, String> shopUserMap = Maps.newHashMap();
+				Map<String, Set<String>> shopTerritoryMap = Maps.newHashMap();
+				Map<String, String> shopExternalMap = Maps.newHashMap();
+				Map<String, String> shopTerritoryIDMap = Maps.newHashMap();
 
 				for (Map<String, Object> sfInfo : salesForceInfoList) {
 					try {
 						shopUserMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("ownerLoginId"));
 						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((Map<String, String>) sfInfo.get("territoryId2Name")).keySet());
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
+						shopTerritoryIDMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("userShopTerritoryId"));
 					} catch (Exception e) {
 						logger.error(sfInfo.entrySet().toString(), e);
 					}
@@ -166,7 +170,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 				deleteUserShopWrongData(userShopList);
 
-				insertUserShopRightData(shopUserMap);
+				insertUserShopRightData(shopUserMap, shopTerritoryIDMap);
 
 				List<ShopTerritory> shopTerritoryList = shopTerritoryDao.queryShopTerritoryByNewShopIDList(new ArrayList<String>(shopTerritoryMap.keySet()));
 				ShopTerritory st;
@@ -226,7 +230,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 		}
 	}
 
-	public void insertUserShopRightData(Map<String, String> shopUserMap) {
+	public void insertUserShopRightData(Map<String, String> shopUserMap, Map<String, String> shopTerritoryIDMap) {
 		if (shopUserMap.size() == 0)
 			return;
 
@@ -239,6 +243,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				continue;
 
 			UserShopTerritory userShopTerritory = new UserShopTerritory();
+			userShopTerritory.setUserShopTerritoryID(Long.valueOf(shopTerritoryIDMap.get(entry.getKey())));
 			userShopTerritory.setUserID(Integer.valueOf(entry.getValue()));
 			userShopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
 			userShopTerritory.setStatus(1);
