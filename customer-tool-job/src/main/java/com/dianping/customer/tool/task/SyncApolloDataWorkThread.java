@@ -71,16 +71,16 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
-//		int begin = threadBegin;
-//		int end = begin + DEFAULT_SIZE;
-		int begin = 5354232;
-		int end = 5354233;
+		int begin = threadBegin;
+		int end = begin + DEFAULT_SIZE;
+//		int begin = 5354232;
+//		int end = 5354233;
 		int index = DEFAULT_INDEX;
 		int pageSize = DEFAULT_SIZE;
 
 		int flag = 0;
 
-		while (flag < 1000 && end <= 5354233) {//flag < 1000 && end <= threadEnd
+		while (flag < 1000 && end <= threadEnd) {//flag < 1000 && end <= 5354233
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -126,19 +126,8 @@ public class SyncApolloDataWorkThread implements Runnable {
 					}
 				}
 
-				logger.info("ShopUserMap before: +++++++++++++++++++++");
-				logger.info(shopUserMap.toString());
-				logger.info("shopTerritoryIDMap before: +++++++++++++++++++++");
-				logger.info(shopTerritoryIDMap.toString());
-
 				List<UserShopTerritory> userShopList = userShopTerritoryDao.queryUserShopTerritoryByNewShopIDList(
 						new ArrayList<String>(shopUserMap.keySet()));
-
-				logger.info("UserShopList before: ++++++++++++++++++++++++");
-				for(UserShopTerritory u : userShopList){
-					logger.info(u.getUserID() + " " + u.getNewShopID() + " " + u.getTerritoryID() + "\n");
-				}
-
 				UserShopTerritory ust;
 				for (int i = 0; i < userShopList.size(); i++) {
 					ust = userShopList.get(i);
@@ -160,14 +149,6 @@ public class SyncApolloDataWorkThread implements Runnable {
 						shopUserMap.remove(String.valueOf(ust.getNewShopID()));
 						i--;
 					}
-				}
-
-				logger.info("ShopUserMap after: +++++++++++++++++++++");
-				logger.info(shopUserMap.toString());
-
-				logger.info("UserShopList after: ++++++++++++++++++++++++");
-				for(UserShopTerritory u : userShopList){
-					logger.info(u.getUserID() + " " + u.getNewShopID() + " " + u.getTerritoryID() + "\n");
 				}
 
 				deleteUserShopWrongData(userShopList);
