@@ -69,16 +69,16 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
-		int begin = threadBegin;
-		int end = begin + DEFAULT_SIZE;
-//		int begin = 16990000;
-//		int end = 16995001;
+//		int begin = threadBegin;
+//		int end = begin + DEFAULT_SIZE;
+		int begin = 5354232;
+		int end = 5354233;
 		int index = DEFAULT_INDEX;
 		int pageSize = DEFAULT_SIZE;
 
 		int flag = 0;
 
-		while (flag < 1000 && end <= threadEnd) {//flag < 1000 && end <= 16995001
+		while (flag < 1000 && end <= 5354233) {//flag < 1000 && end <= threadEnd
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -122,8 +122,17 @@ public class SyncApolloDataWorkThread implements Runnable {
 					}
 				}
 
+				logger.info("ShopUserMap: +++++++++++++++++++++");
+				logger.info(shopUserMap.toString());
+
 				List<UserShopTerritory> userShopList = userShopTerritoryDao.queryUserShopTerritoryByNewShopIDList(
 						new ArrayList<String>(shopUserMap.keySet()));
+
+				logger.info("UserShopList: ++++++++++++++++++++++++");
+				for(UserShopTerritory u : userShopList){
+					logger.info(u.getUserID() + " " + u.getNewShopID() + " " + u.getTerritoryID() + "\n");
+				}
+
 				UserShopTerritory ust;
 				for (int i = 0; i < userShopList.size(); i++) {
 					ust = userShopList.get(i);
