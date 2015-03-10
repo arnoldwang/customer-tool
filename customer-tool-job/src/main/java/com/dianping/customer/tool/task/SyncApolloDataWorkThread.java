@@ -137,6 +137,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				for (int i = 0; i < userShopList.size(); i++) {
 					ust = userShopList.get(i);
 					if (!userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台")
+							&& !userGroupService.getBUNamebyLogin(ust.getUserID()).contains("结婚事业部")
 							&& !userService.queryUserByLoginID(ust.getUserID()).getRealName().contains("销售公海")){
 						userShopList.remove(i);
 						i--;
