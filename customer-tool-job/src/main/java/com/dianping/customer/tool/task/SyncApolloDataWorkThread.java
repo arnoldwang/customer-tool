@@ -16,6 +16,7 @@ import com.dianping.customer.tool.utils.ConfigUtils;
 import com.dianping.salesbu.api.UserGroupService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,16 +72,16 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
-		int begin = threadBegin;
-		int end = begin + DEFAULT_SIZE;
-//		int begin = 5354232;
-//		int end = 5354233;
+//		int begin = threadBegin;
+//		int end = begin + DEFAULT_SIZE;
+		int begin = 2056099;
+		int end = 2056100;
 		int index = DEFAULT_INDEX;
 		int pageSize = DEFAULT_SIZE;
 
 		int flag = 0;
 
-		while (flag < 1000 && end <= threadEnd) {//flag < 1000 && end <= 5354233
+		while (flag < 1000 && end <= 2056100) {//flag < 1000 &&   end <= threadEnd
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -110,14 +111,14 @@ public class SyncApolloDataWorkThread implements Runnable {
 							" From " + (begin - DEFAULT_SIZE) + " to " + begin + " has no data!");
 					continue;
 				}
-				Map<String, String> shopUserMap = Maps.newHashMap();
+				Map<String, List<String>> shopUserMap = Maps.newHashMap();
 				Map<String, Set<String>> shopTerritoryMap = Maps.newHashMap();
 				Map<String, String> shopExternalMap = Maps.newHashMap();
 				Map<String, String> shopTerritoryIDMap = Maps.newHashMap();
 
 				for (Map<String, Object> sfInfo : salesForceInfoList) {
 					try {
-						shopUserMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("ownerLoginId"));
+						shopUserMap.put((String) sfInfo.get("shopId"), (List<String>) sfInfo.get("ownerList"));
 						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((Map<String, String>) sfInfo.get("territoryId2Name")).keySet());
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
 						shopTerritoryIDMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("userShopTerritoryId"));
@@ -131,22 +132,16 @@ public class SyncApolloDataWorkThread implements Runnable {
 				UserShopTerritory ust;
 				for (int i = 0; i < userShopList.size(); i++) {
 					ust = userShopList.get(i);
-					if (!userGroupService.getBUNamebyLogin(ust.getUserID()).contains("交易平台")
-							&& !userGroupService.getBUNamebyLogin(ust.getUserID()).contains("结婚事业部")
-							&& !userService.queryUserByLoginID(ust.getUserID()).getRealName().contains("销售公海")){
-						userShopList.remove(i);
-						i--;
-						continue;
-					}
 
 					if (shopUserMap.get(String.valueOf(ust.getNewShopID())) == null) {
 						//Apollo中的数据，SalesForce中没有，将Apollo中的数据删除
 						continue;
 					}
 
-					if (shopUserMap.get(String.valueOf(ust.getNewShopID())).equals(String.valueOf(ust.getUserID()))) {
+					List<String> userIds = shopUserMap.get(String.valueOf(ust.getNewShopID()));
+					if (userIds.contains(String.valueOf(ust.getUserID()))) {
 						userShopList.remove(i);
-						shopUserMap.remove(String.valueOf(ust.getNewShopID()));
+						userIds.remove(String.valueOf(ust.getUserID()));
 						i--;
 					}
 				}
@@ -213,25 +208,29 @@ public class SyncApolloDataWorkThread implements Runnable {
 		}
 	}
 
-	public void insertUserShopRightData(Map<String, String> shopUserMap, Map<String, String> shopTerritoryIDMap) {
+	public void insertUserShopRightData(Map<String, List<String>> shopUserMap, Map<String, String> shopTerritoryIDMap) {
 		if (shopUserMap.size() == 0)
 			return;
 
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
-		for (Map.Entry<String, String> entry : shopUserMap.entrySet()) {
-			if (entry.getValue() == null)
-				continue;
-			if (entry.getValue().equals("-38178"))
+		for (Map.Entry<String, List<String>> entry : shopUserMap.entrySet()) {
+			if (entry.getValue() == null || entry.getValue().size() == 0)
 				continue;
 
-			UserShopTerritory userShopTerritory = new UserShopTerritory();
-			userShopTerritory.setUserShopTerritoryID(Long.valueOf(shopTerritoryIDMap.get(entry.getKey())));
-			userShopTerritory.setUserID(Integer.valueOf(entry.getValue()));
-			userShopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
-			userShopTerritory.setStatus(1);
-			userShopTerritory.setApproveStatus(1);
-			userShopTerritoryList.add(userShopTerritory);
+			for(Object userId: entry.getValue()){
+				if(userId == JSONObject.NULL || userId.equals("-38178"))
+					continue;
+
+				UserShopTerritory userShopTerritory = new UserShopTerritory();
+				userShopTerritory.setUserShopTerritoryID(Long.valueOf(shopTerritoryIDMap.get(entry.getKey())));
+				userShopTerritory.setUserID(Integer.valueOf((String)userId));
+				userShopTerritory.setNewShopID(Integer.valueOf(entry.getKey()));
+				userShopTerritory.setStatus(1);
+				userShopTerritory.setApproveStatus(1);
+				userShopTerritoryList.add(userShopTerritory);
+			}
+
 		}
 
 		try {
