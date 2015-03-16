@@ -81,7 +81,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 		int flag = 0;
 
-		while (flag < 1000 && end <= threadEnd) {//flag < 1000 &&   end <= threadEnd
+		while (end <= threadEnd) {//flag < 1000 &&   end <= threadEnd
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -173,7 +173,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				flag = 0;
 			} catch (Exception e) {
 				flag++;
-				logger.error("This thread: " + Thread.currentThread().getName() + " Sql runs failed!", e);
+//				logger.error("This thread: " + Thread.currentThread().getName() + " Sql runs failed!", e);
 			}
 			if (type.equals("all"))
 				logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
