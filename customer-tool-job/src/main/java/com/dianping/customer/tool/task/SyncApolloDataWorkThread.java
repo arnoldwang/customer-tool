@@ -72,16 +72,16 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 	@SuppressWarnings("unchecked")
 	private void syncSalesForceToApollo(String type, int threadBegin, int threadEnd) {
-//		int begin = threadBegin;
-//		int end = begin + DEFAULT_SIZE;
-		int begin = 2056099;
-		int end = 2057100;
+		int begin = threadBegin;
+		int end = begin + DEFAULT_SIZE;
+//		int begin = 2056099;
+//		int end = 2057100;
 		int index = DEFAULT_INDEX;
 		int pageSize = DEFAULT_SIZE;
 
 		int flag = 0;
 
-		while (flag < 1000 && end <= 2056100) {//flag < 1000 &&   end <= threadEnd
+		while (flag < 1000 && end <= threadEnd) {//flag < 1000 &&   end <= threadEnd
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
