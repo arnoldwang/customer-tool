@@ -217,7 +217,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 		for (Map.Entry<String, List<String>> entry : shopUserMap.entrySet()) {
 			if (entry.getValue() == null || entry.getValue().size() == 0)
 				continue;
-
+			logger.info("userID===========" + entry.getValue());
 			for(Object userId: entry.getValue()){
 				if(userId == JSONObject.NULL || userId.equals("-38178"))
 					continue;
