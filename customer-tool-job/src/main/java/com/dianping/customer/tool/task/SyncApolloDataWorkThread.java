@@ -222,6 +222,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				if(userId == JSONObject.NULL || userId.equals("-38178"))
 					continue;
 
+				logger.info("userID after filter++++++++++++" + userId);
 				UserShopTerritory userShopTerritory = new UserShopTerritory();
 				userShopTerritory.setUserShopTerritoryID(Long.valueOf(shopTerritoryIDMap.get(entry.getKey())));
 				userShopTerritory.setUserID(Integer.valueOf((String)userId));
