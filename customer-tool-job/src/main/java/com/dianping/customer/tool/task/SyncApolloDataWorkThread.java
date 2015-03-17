@@ -81,7 +81,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 
 		int flag = 0;
 
-		while (end <= threadEnd) {//flag < 1000 &&   end <= threadEnd
+		while (flag < 1000 && end <= threadEnd) {//flag < 1000 &&   end <= threadEnd
 			try {
 				if (!ConfigUtils.getSyncApolloDataTaskTrigger()) {
 					logger.info("SyncApolloDataTask stop!");
@@ -111,14 +111,14 @@ public class SyncApolloDataWorkThread implements Runnable {
 							" From " + (begin - DEFAULT_SIZE) + " to " + begin + " has no data!");
 					continue;
 				}
-				Map<String, List<String>> shopUserMap = Maps.newHashMap();
+				Map<String, List<Object>> shopUserMap = Maps.newHashMap();
 				Map<String, Set<String>> shopTerritoryMap = Maps.newHashMap();
 				Map<String, String> shopExternalMap = Maps.newHashMap();
 				Map<String, String> shopTerritoryIDMap = Maps.newHashMap();
 
 				for (Map<String, Object> sfInfo : salesForceInfoList) {
 					try {
-						shopUserMap.put((String) sfInfo.get("shopId"), (List<String>) sfInfo.get("ownerList"));
+						shopUserMap.put((String) sfInfo.get("shopId"), (List<Object>) sfInfo.get("ownerList"));
 						shopTerritoryMap.put((String) sfInfo.get("shopId"), ((Map<String, String>) sfInfo.get("territoryId2Name")).keySet());
 						shopExternalMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("sfId"));
 						shopTerritoryIDMap.put((String) sfInfo.get("shopId"), (String) sfInfo.get("userShopTerritoryId"));
@@ -138,7 +138,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 						continue;
 					}
 
-					List<String> userIds = shopUserMap.get(String.valueOf(ust.getNewShopID()));
+					List<Object> userIds = shopUserMap.get(String.valueOf(ust.getNewShopID()));
 					if (userIds.contains(String.valueOf(ust.getUserID()))) {
 						userShopList.remove(i);
 						userIds.remove(String.valueOf(ust.getUserID()));
@@ -173,7 +173,7 @@ public class SyncApolloDataWorkThread implements Runnable {
 				flag = 0;
 			} catch (Exception e) {
 				flag++;
-//				logger.error("This thread: " + Thread.currentThread().getName() + " Sql runs failed!", e);
+				logger.error("This thread: " + Thread.currentThread().getName() + " Sql runs failed!", e);
 			}
 			if (type.equals("all"))
 				logger.info("This thread: " + Thread.currentThread().getName() + " this task run about " + end + " data!");
@@ -208,13 +208,13 @@ public class SyncApolloDataWorkThread implements Runnable {
 		}
 	}
 
-	public void insertUserShopRightData(Map<String, List<String>> shopUserMap, Map<String, String> shopTerritoryIDMap) {
+	public void insertUserShopRightData(Map<String, List<Object>> shopUserMap, Map<String, String> shopTerritoryIDMap) {
 		if (shopUserMap.size() == 0)
 			return;
 
 		List<UserShopTerritory> userShopTerritoryList = Lists.newArrayList();
 
-		for (Map.Entry<String, List<String>> entry : shopUserMap.entrySet()) {
+		for (Map.Entry<String, List<Object>> entry : shopUserMap.entrySet()) {
 			if (entry.getValue() == null || entry.getValue().size() == 0)
 				continue;
 			logger.info("userID===========" + entry.getValue());
