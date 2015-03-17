@@ -217,12 +217,10 @@ public class SyncApolloDataWorkThread implements Runnable {
 		for (Map.Entry<String, List<Object>> entry : shopUserMap.entrySet()) {
 			if (entry.getValue() == null || entry.getValue().size() == 0)
 				continue;
-			logger.info("userID===========" + entry.getValue());
 			for(Object userId: entry.getValue()){
 				if(userId == JSONObject.NULL || userId.equals("-38178"))
 					continue;
 
-				logger.info("userID after filter++++++++++++" + userId);
 				UserShopTerritory userShopTerritory = new UserShopTerritory();
 				userShopTerritory.setUserShopTerritoryID(Long.valueOf(shopTerritoryIDMap.get(entry.getKey())));
 				userShopTerritory.setUserID(Integer.valueOf((String)userId));
