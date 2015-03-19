@@ -37,7 +37,7 @@
             ApproveComment,
             ExternalId
         FROM MR_OrgTerritory
-        WHERE OrgID = #orgId#
+        WHERE OrgID = #orgId# AND Status != 0
         LIMIT 10000;
     </select>
 
